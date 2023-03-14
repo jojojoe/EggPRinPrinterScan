@@ -7,18 +7,38 @@
 
 import UIKit
 import WebKit
+import PDFKit
 
 class PRPrinterOptionsVC: UIViewController {
     
+    
+    let pageRangeInfoL = UILabel()
     var contentUrls: [URL]
     let printerNameL = UILabel()
     var copiesCount: Int = 1
     let copiesCountL = UILabel()
-    var rangeMin: Int = 1
-    var rangeMax: Int = 3
+    var rangeMin: Int = 1 {
+        didSet {
+            if rangeMax == 1 {
+                pageRangeInfoL.text = "Page \(rangeMin)"
+            } else {
+                pageRangeInfoL.text = "Pages \(rangeMin)-\(rangeMax)"
+            }
+        }
+    }
+    var rangeMax: Int = 1 {
+        didSet {
+            if rangeMax == 1 {
+                pageRangeInfoL.text = "Page \(rangeMin)"
+            } else {
+                pageRangeInfoL.text = "Pages \(rangeMin)-\(rangeMax)"
+            }
+        }
+    }
     var pageSizeStr = "A4"
     
-    
+    var document: PDFDocument = PDFDocument()
+    var previewCollection: PRinPdfPreviewCollection?
     
     init(contentUrls: [URL]) {
         self.contentUrls = contentUrls
@@ -232,7 +252,7 @@ class PRPrinterOptionsVC: UIViewController {
             $0.height.equalTo(24/2)
         }
         //
-        let pageRangeInfoL = UILabel()
+        
         pageRangeSelectBtn.addSubview(pageRangeInfoL)
         pageRangeInfoL.textColor = UIColor(hexString: "#999999")
         pageRangeInfoL.font = UIFont(name: "SFProText-Regular", size: 14)
@@ -354,12 +374,22 @@ class PRPrinterOptionsVC: UIViewController {
                 
             }
         }
+        //
+        let pdfPreviewBgV = UIView()
+        view.addSubview(pdfPreviewBgV)
+        pdfPreviewBgV.snp.makeConstraints {
+            $0.left.right.equalToSuperview()
+            $0.top.equalTo(pagePerSheetBgV.snp.bottom).offset(5)
+            $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(0)
+        }
+        
+        
         
         //
         if let targetUrl = contentUrls.first {
             //
             let webView: WKWebView = WKWebView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
-            view.addSubview(webView)
+//            view.addSubview(webView)
             if targetUrl.relativePath.hasSuffix("txt") || targetUrl.relativePath.hasSuffix("TXT") {
                 do {
                     let data = try Data(contentsOf: targetUrl)
@@ -379,7 +409,28 @@ class PRPrinterOptionsVC: UIViewController {
                 webView.load(URLRequest(url: targetUrl))
             }
             
-
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.5) {
+                [weak self] in
+                guard let `self` = self else {return}
+                let pdfdata = self.pdfDataRepresentation(webView: webView)
+                //
+                if let docu = PDFDocument(data: pdfdata) {
+                    self.document = docu
+                    self.rangeMin = 1
+                    self.rangeMax = self.document.pageCount
+                    self.previewCollection = PRinPdfPreviewCollection(frame: .zero, pdfDocument: self.document, rangeMin: self.rangeMin, rangeMax: self.rangeMax)
+                    pdfPreviewBgV.addSubview(self.previewCollection!)
+                    self.previewCollection!.snp.makeConstraints {
+                        $0.centerY.equalToSuperview()
+                        $0.left.right.equalToSuperview()
+                        $0.height.equalToSuperview()
+                    }
+                }
+                
+               
+            }
+            
+            
 //            printInVC.printFormatter = webV.viewPrintFormatter()
 //            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.5) {
 //                if let printer_m = printer {
@@ -472,7 +523,7 @@ extension PRPrinterOptionsVC {
         let render: UIPrintPageRenderer = UIPrintPageRenderer()
         render.addPrintFormatter(fmt, startingAtPageAt: 0)
         let page = CGRect(x: 0, y: 0, width: 210 * 5, height: 297 * 5)
-        let printable = CGRectInset(page, 50, 50)
+        let printable = CGRectInset(page, 0, 0)
         render.setValue(page, forKey: "paperRect")
         render.setValue(printable, forKey: "printableRect")
         

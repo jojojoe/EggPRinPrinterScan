@@ -1,0 +1,7 @@
+PRinPrinterScan.xcodeproj/xcuserdata/
+PRinPrinterScan.xcworkspace/
+Pods/
+*.swp
+Podfile.lock
+.DS_Store
+PRinPrinterScan.xcodeproj/project.xcworkspace/xcuserdata/

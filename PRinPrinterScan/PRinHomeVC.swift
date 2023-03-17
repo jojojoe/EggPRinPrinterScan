@@ -373,7 +373,7 @@ extension PRinHomeVC {
         
         let textFormatter = UISimpleTextPrintFormatter(text: "hello world  hhhhhh!")
         textFormatter.startPage = 0
-        textFormatter.perPageContentInsets = UIEdgeInsets(top: 10, left: 10, bottom: 0, right: 72)
+        textFormatter.perPageContentInsets = UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12)
         textFormatter.maximumContentWidth = 16 * 72.0
         printInVC.printFormatter = textFormatter
         

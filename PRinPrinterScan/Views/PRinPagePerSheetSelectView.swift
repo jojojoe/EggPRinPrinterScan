@@ -8,7 +8,7 @@
 import UIKit
 
 class PRinPagePerSheetSelectView: UIView {
-    var list: [String] = ["1", "2", "3", "4", "5", "6"]
+    var list: [String] = ["1", "2", "4", "6", "9", "16"]
     var currentItem: String = "1"
     var collection: UICollectionView!
     var perSheetSelectBlock: ((String)->Void)?
@@ -50,9 +50,9 @@ extension PRinPagePerSheetSelectView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withClass: PRPrinterPerSheetCell.self, for: indexPath)
         let item = list[indexPath.item]
-        let iconName = "sheet\(item)"
+        let iconName = "sheet\(indexPath.item + 1)"
         cell.iconImgV.image = UIImage(named: iconName)?.withRenderingMode(.alwaysTemplate)
-        cell.nameL.text = item
+        cell.nameL.text = "\(indexPath.item)"
         if currentItem == item {
             cell.imgBgV.backgroundColor = UIColor(hexString: "#4285F4")
             cell.iconImgV.tintColor = UIColor(hexString: "#FFFFFF")

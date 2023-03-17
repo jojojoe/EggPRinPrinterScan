@@ -8,15 +8,25 @@
 import UIKit
 import WebKit
 import PDFKit
+import KRProgressHUD
+
+let pdfWidth: CGFloat = 595
+let pdfHeight: CGFloat = 842
+
 
 class PRPrinterOptionsVC: UIViewController {
     
-    
+    let pdfPreviewBgV = UIView()
     let pageRangeInfoL = UILabel()
-    var contentUrls: [URL]
+    var contentUrl: URL
     let printerNameL = UILabel()
-    var copiesCount: Int = 1
+    var copiesCount: Int = 1 {
+        didSet {
+            copiesCountL.text = "\(copiesCount)"
+        }
+    }
     let copiesCountL = UILabel()
+    
     var rangeMin: Int = 1 {
         didSet {
             if rangeMax == 1 {
@@ -35,13 +45,17 @@ class PRPrinterOptionsVC: UIViewController {
             }
         }
     }
+    var currentTotalPageCount: Int = 1 // 下面预览的总页面数（选择完每页展示多少pdf page 后的页面数 小于 pdf的文件页面个数 ）
+    
     var pageSizeStr = "A4"
+    var currentSheetStr: String = "1"
+    
     
     var document: PDFDocument = PDFDocument()
     var previewCollection: PRinPdfPreviewCollection?
     
-    init(contentUrls: [URL]) {
-        self.contentUrls = contentUrls
+    init(contentUrl: URL) {
+        self.contentUrl = contentUrl
         super.init(nibName: nil, bundle: nil)
         
     }
@@ -284,12 +298,14 @@ class PRPrinterOptionsVC: UIViewController {
             $0.top.equalTo(pageRangeSelectBtn.snp.bottom)
             $0.height.equalTo(52)
         }
+        pageSizeSelectBtn.addTarget(self, action: #selector(pageSizeSelectBtnClick(sender: )), for: .touchUpInside)
+        
         //
         let pageSizeL = UILabel()
         pageSizeSelectBtn.addSubview(pageSizeL)
         pageSizeL.textColor = .black
         pageSizeL.font = UIFont(name: "SFProText-Regular", size: 14)
-        pageSizeL.text = "Range"
+        pageSizeL.text = "Paper size"
         pageSizeL.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.left.equalToSuperview().offset(16)
@@ -305,7 +321,7 @@ class PRPrinterOptionsVC: UIViewController {
         pageSizeSelectBtn.addSubview(pageSizearrowImgV)
         pageSizearrowImgV.snp.makeConstraints {
             $0.centerY.equalToSuperview()
-            $0.right.equalToSuperview().offset(-30)
+            $0.right.equalToSuperview().offset(-18)
             $0.width.equalTo(16/2)
             $0.height.equalTo(24/2)
         }
@@ -351,7 +367,7 @@ class PRPrinterOptionsVC: UIViewController {
         pagePerSheetBgV.addSubview(pagePerSheetL)
         pagePerSheetL.textColor = .black
         pagePerSheetL.font = UIFont(name: "SFProText-Regular", size: 14)
-        pagePerSheetL.text = "Range"
+        pagePerSheetL.text = "Pages per sheet"
         pagePerSheetL.snp.makeConstraints {
             $0.top.equalToSuperview().offset(13)
             $0.left.equalToSuperview().offset(16)
@@ -371,11 +387,11 @@ class PRPrinterOptionsVC: UIViewController {
             [weak self] sheetItem in
             guard let `self` = self else {return}
             DispatchQueue.main.async {
-                
+                self.updatePerSheetCount(sheetStr: sheetItem)
             }
         }
+
         //
-        let pdfPreviewBgV = UIView()
         view.addSubview(pdfPreviewBgV)
         pdfPreviewBgV.snp.makeConstraints {
             $0.left.right.equalToSuperview()
@@ -383,71 +399,92 @@ class PRPrinterOptionsVC: UIViewController {
             $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(0)
         }
         
-        
-        
         //
-        if let targetUrl = contentUrls.first {
-            //
+        let targetUrl = contentUrl
+        
+        if targetUrl.relativePath.hasSuffix("pdf") || targetUrl.relativePath.hasSuffix("PDF") {
+            if let docu = PDFDocument(url: targetUrl) {
+                self.processDocumentWith(docu: docu)
+            }
+        } else if targetUrl.relativePath.hasSuffix("jpg") || targetUrl.relativePath.hasSuffix("JPG") || targetUrl.relativePath.hasSuffix("png") || targetUrl.relativePath.hasSuffix("PNG") {
+            do {
+                let targetimg = try UIImage(url: targetUrl)
+                if let img = targetimg {
+                    let pdfdata = porcessImgToPDF(image: img)
+                    if let docu = PDFDocument(data: pdfdata) {
+                        self.processDocumentWith(docu: docu)
+                    }
+                }
+            } catch {
+                debugPrint("jpg url error - \(error)")
+            }
+            
+        } else {
             let webView: WKWebView = WKWebView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
-//            view.addSubview(webView)
             if targetUrl.relativePath.hasSuffix("txt") || targetUrl.relativePath.hasSuffix("TXT") {
                 do {
                     let data = try Data(contentsOf: targetUrl)
                     webView.load(data, mimeType: "text/html", characterEncodingName: "UTF-8", baseURL: targetUrl)
-
-                } catch {
+                    KRProgressHUD.show()
+                    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 2.0) {
+                        [weak self] in
+                        guard let `self` = self else {return}
+                        KRProgressHUD.dismiss()
+                        let pdfdata = self.pdfDataRepresentation(webView: webView)
+                        if let docu = PDFDocument(data: pdfdata) {
+                            self.processDocumentWith(docu: docu)
+                        }
+                        
+                    }
                     
-                }
-            } else if targetUrl.relativePath.hasSuffix("pdf") || targetUrl.relativePath.hasSuffix("PDF") {
-                do {
-                    let data = try Data(contentsOf: targetUrl)
-                    webView.load(data, mimeType: "application/pdf", characterEncodingName: "UTF-8", baseURL: targetUrl)
                 } catch {
-                    
+                    debugPrint("txt url error - \(error)")
                 }
             } else {
-                webView.load(URLRequest(url: targetUrl))
-            }
-            
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.5) {
-                [weak self] in
-                guard let `self` = self else {return}
-                let pdfdata = self.pdfDataRepresentation(webView: webView)
-                //
-                if let docu = PDFDocument(data: pdfdata) {
-                    self.document = docu
-                    self.rangeMin = 1
-                    self.rangeMax = self.document.pageCount
-                    self.previewCollection = PRinPdfPreviewCollection(frame: .zero, pdfDocument: self.document, rangeMin: self.rangeMin, rangeMax: self.rangeMax)
-                    pdfPreviewBgV.addSubview(self.previewCollection!)
-                    self.previewCollection!.snp.makeConstraints {
-                        $0.centerY.equalToSuperview()
-                        $0.left.right.equalToSuperview()
-                        $0.height.equalToSuperview()
+                do {
+                    let data = try Data(contentsOf: targetUrl)
+                    webView.load(data, mimeType: "text/html", characterEncodingName: "UTF-8", baseURL: targetUrl)
+                    KRProgressHUD.show()
+                    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 2.0) {
+                        [weak self] in
+                        guard let `self` = self else {return}
+                        KRProgressHUD.dismiss()
+                        let pdfdata = self.pdfDataRepresentation(webView: webView)
+                        if let docu = PDFDocument(data: pdfdata) {
+                            self.processDocumentWith(docu: docu)
+                        }
+                        
                     }
+                    
+                } catch {
+                    
                 }
-                
-               
             }
-            
-            
-//            printInVC.printFormatter = webV.viewPrintFormatter()
-//            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.5) {
-//                if let printer_m = printer {
-//                    printInVC.print(to: printer_m, completionHandler: {
-//                        controller, completed, error in
-//
-//                    })
-//                } else {
-//                    printInVC.present(animated: true) {
-//                        controller, completed, error in
-//
-//                    }
-//                }
-//            }
+        }
+    }
+    
+    func processDocumentWith(docu: PDFDocument) {
+        //
+        self.document = docu
+        self.rangeMin = 1
+        let totalPageCount = sheetPageTotalCount(sheet: currentSheetStr.int ?? 1)
+        rangeMin = 1
+        rangeMax = totalPageCount
+        
+        
+        
+        
+        self.rangeMax = self.document.pageCount
+        self.previewCollection = PRinPdfPreviewCollection(frame: .zero, pdfDocument: self.document, rangeMin: self.rangeMin, rangeMax: self.rangeMax, pageCount: totalPageCount)
+        pdfPreviewBgV.addSubview(self.previewCollection!)
+        self.previewCollection!.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.left.right.equalToSuperview()
+            $0.height.equalToSuperview()
         }
         
     }
+    
     
     
 }
@@ -455,22 +492,34 @@ class PRPrinterOptionsVC: UIViewController {
 extension PRPrinterOptionsVC {
     
     @objc func backBtnClick(sender: UIButton) {
-        
+        if self.navigationController != nil {
+            self.navigationController?.popViewController(animated: true)
+        } else {
+            self.dismiss(animated: true, completion: nil)
+        }
     }
     
     @objc func printerBtnClick(sender: UIButton) {
-        
+        if currentSheetStr == "1" {
+            showSystemPrinter(urls: [contentUrl])
+        } else {
+            if let previewCo = previewCollection {
+                let resultUlrs = previewCo.processMakeNewPDFImagesUrls()
+                showSystemPrinter(urls: resultUlrs)
+            }
+
+        }
     }
     
+    
     @objc func printerSelectBtnClick(sender: UIButton) {
-        
+        showPrinterPicker()
     }
     
     @objc func copiesCountAddBtnClick(sender: UIButton) {
         if copiesCount < 9 {
             copiesCount += 1
         }
-        
     }
     
     @objc func copiesCountJianBtnClick(sender: UIButton) {
@@ -479,15 +528,135 @@ extension PRPrinterOptionsVC {
         }
     }
     
-    func updateCopiesCountLabel() {
-        copiesCountL.text = "\(copiesCount)"
+    @objc func pageSizeSelectBtnClick(sender: UIButton) {
+        
+    }
+    
+    func sheetPageTotalCount(sheet: Int) -> Int {
+        var sheetPageCount: Int = 0
+        
+        let perCount: Int = sheet
+        let documentPageCount = document.pageCount
+        let chushu = documentPageCount / perCount
+        let yushu = documentPageCount % perCount
+        if yushu == 0 {
+            sheetPageCount = chushu
+        } else {
+            sheetPageCount = chushu + 1
+        }
+        currentTotalPageCount = sheetPageCount
+        return sheetPageCount
+    }
+    
+    func updatePerSheetCount(sheetStr: String) {
+        currentSheetStr = sheetStr
+        let sheetCou = sheetStr.int ?? 1
+        let totalPageCount = sheetPageTotalCount(sheet: sheetCou)
+        rangeMin = 1
+        rangeMax = totalPageCount
+        
+        self.previewCollection?.updatePerPage(sheetCount: sheetCou, rangeMin: rangeMin, rangeMax: rangeMax, pageCount: totalPageCount)
+        
     }
     
     
-    
-    
+    func showSystemPrinter(urls: [URL]) {
+        
+        let printInVC = UIPrintInteractionController.shared
+        printInVC.showsPaperSelectionForLoadedPapers = true
+        let info = UIPrintInfo(dictionary: nil)
+        info.jobName = Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String ?? "Sample Print"
+//        info.orientation = .portrait // Portrait or Landscape
+//        info.outputType = .general //ContentType
+        printInVC.printInfo = info
+        printInVC.printingItems = urls //array of NSData, NSURL, UIImage.
+        printInVC.present(animated: true) {
+            controller, completed, error in
+            
+        }
+    }
     
 }
+
+extension PRPrinterOptionsVC {
+    
+    func porcessImgToPDF(image: UIImage) -> Data {
+        
+        let pdfData = NSMutableData()
+        UIGraphicsBeginPDFContextToData(pdfData, .zero, nil)
+        let bounds = UIGraphicsGetPDFContextBounds()
+        let pdfWidth = bounds.size.width
+        let pdfHeight = bounds.size.height
+        UIGraphicsBeginPDFPage()
+        let imageW = image.size.width
+        let imageH = image.size.height
+        if (imageW <= pdfWidth && imageH <= pdfHeight) {
+            let originX = (pdfWidth - imageW) / 2
+            let originY = (pdfHeight - imageH) / 2
+            image.draw(in: CGRect(x: originX, y: originY, width: imageW, height: imageH))
+
+        } else {
+            var widthm: CGFloat = 0
+            var heightm: CGFloat = 0
+            
+            if ((imageW / imageH) > (pdfWidth / pdfHeight)) {
+                widthm = pdfWidth
+                heightm = widthm * imageH / imageW
+            } else {
+                heightm = pdfHeight;
+                widthm = heightm * imageW / imageH;
+            }
+            image.draw(in: CGRect(x: (pdfWidth - widthm) / 2, y: (pdfHeight - heightm) / 2, width: widthm, height: heightm))
+            
+        }
+        UIGraphicsEndPDFContext()
+        
+        return Data(pdfData)
+    }
+    
+    
+    func porcessImgToPDF(images: [UIImage]) -> URL {
+        
+        let dateStr = CLongLong(round(Date().unixTimestamp*1000)).string
+        let filePath = NSTemporaryDirectory() + "\(dateStr)\(".pdf")"
+        
+        UIGraphicsBeginPDFContextToFile(filePath, .zero, nil)
+        
+        let bounds = UIGraphicsGetPDFContextBounds()
+        let pdfWidth = bounds.size.width
+        let pdfHeight = bounds.size.height
+        
+        for image in images {
+            
+            UIGraphicsBeginPDFPage()
+            let imageW = image.size.width
+            let imageH = image.size.height
+            if (imageW <= pdfWidth && imageH <= pdfHeight) {
+                let originX = (pdfWidth - imageW) / 2
+                let originY = (pdfHeight - imageH) / 2
+                image.draw(in: CGRect(x: originX, y: originY, width: imageW, height: imageH))
+            } else {
+                var widthm: CGFloat = 0
+                var heightm: CGFloat = 0
+                
+                if ((imageW / imageH) > (pdfWidth / pdfHeight)) {
+                    widthm = pdfWidth
+                    heightm = widthm * imageH / imageW
+                } else {
+                    heightm = pdfHeight;
+                    widthm = heightm * imageW / imageH;
+                }
+                image.draw(in: CGRect(x: (pdfWidth - widthm) / 2, y: (pdfHeight - heightm) / 2, width: widthm, height: heightm))
+            }
+        }
+        
+        UIGraphicsEndPDFContext()
+        let url = URL(fileURLWithPath: filePath)
+        return url
+    }
+    
+}
+
 
 extension PRPrinterOptionsVC {
     func showPrinterPicker() {
@@ -498,7 +667,7 @@ extension PRPrinterOptionsVC {
             [unowned self] printerPickerController, userDidSelect, error in
             
             if (error != nil) {
-                debugPrint("Error : \(error)")
+                debugPrint("Error : \(String(describing: error))")
             } else {
                 if let printer: UIPrinter = printerPickerController.selectedPrinter {
                     debugPrint("Printer displayName : \(printer.displayName)")
@@ -522,8 +691,10 @@ extension PRPrinterOptionsVC {
         let fmt: UIViewPrintFormatter = webView.viewPrintFormatter()
         let render: UIPrintPageRenderer = UIPrintPageRenderer()
         render.addPrintFormatter(fmt, startingAtPageAt: 0)
-        let page = CGRect(x: 0, y: 0, width: 210 * 5, height: 297 * 5)
-        let printable = CGRectInset(page, 0, 0)
+//        let page = CGRect(x: 0, y: 0, width: 210, height: 297)
+        
+        let page = CGRect(x: 0, y: 0, width: pdfWidth, height: pdfHeight)
+        let printable = CGRectInset(page, 20, 20)
         render.setValue(page, forKey: "paperRect")
         render.setValue(printable, forKey: "printableRect")
         

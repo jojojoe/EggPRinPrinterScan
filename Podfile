@@ -15,7 +15,7 @@ target 'PRinPrinterScan' do
   pod 'SwiftyStoreKit'
   pod 'KRProgressHUD'
   pod 'DeviceKit'
-  
+  pod 'PickerView'
   
   pod 'LookinServer', :configurations => ['Debug']
   

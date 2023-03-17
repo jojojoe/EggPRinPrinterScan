@@ -112,9 +112,18 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupContentV()
+//        setupContentV()
+//
+//        printBtnClick(sender: printBtn)
         
-        printBtnClick(sender: printBtn)
+        //
+        let rangeV = PRinPageRangeSelectView()
+        view.addSubview(rangeV)
+        rangeV.snp.makeConstraints {
+            $0.center.equalToSuperview()
+            $0.width.equalToSuperview()
+            $0.height.equalTo(300)
+        }
         
     }
  

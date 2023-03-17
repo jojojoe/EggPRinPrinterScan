@@ -274,9 +274,6 @@ class PRinMPrintBottomBtn: UIButton {
         }
     }
     
-    
-    
-    
 }
 
 extension PRPrinterViewController: UIDocumentPickerDelegate {
@@ -286,9 +283,12 @@ extension PRPrinterViewController: UIDocumentPickerDelegate {
             for (ind, url) in urls.enumerated() {
                 debugPrint("documentURLs - \(ind) path - \(url)")
             }
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.5) {
-                let pageOptionVC = PRPrinterOptionsVC(contentUrls: urls)
-                self.mainVC.navigationController?.pushViewController(pageOptionVC, animated: true)
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.5) {
+                if let targetUrl = urls.first {
+                    let pageOptionVC = PRPrinterOptionsVC(contentUrl: targetUrl)
+                    self.mainVC.navigationController?.pushViewController(pageOptionVC, animated: true)
+                }
+
             }
         }
     }

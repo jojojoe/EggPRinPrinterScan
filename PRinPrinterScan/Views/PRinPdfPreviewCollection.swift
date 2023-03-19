@@ -11,153 +11,55 @@ import PDFKit
 
 class PRinPdfPreviewCollection: UIView {
 
-    var pdfDocument: PDFDocument
+//    var pdfDocument: PDFDocument
     var collection: UICollectionView!
     let thumbnailCache = NSCache<NSNumber, UIImage>()
     private let downloadQueue = DispatchQueue(label: "com.printscan.pdfviewer.thumbnail")
-    private let downloadQueue_big = DispatchQueue(label: "com.printscan.pdfviewer.big")
-    
-    var currentSheetCount: Int = 1
-    var currentRangeMin: Int
-    var currentRangeMax: Int
-    var totalPageCount: Int
-    var pdfCount: Int
-    
-    var loadPdfPhotoGroup = DispatchGroup()
-    var urlPathListDict: [String:URL] = [:]
-    var hasloadBigPDFImg: Bool = false
     
     
+//    var currentSheetCount: Int = 1
+//    var currentRangeMin: Int
+//    var currentRangeMax: Int
+//    var totalPageCount: Int
+//    var pdfCount: Int
     
-    func updatePerPage(sheetCount: Int, rangeMin: Int, rangeMax: Int, pageCount: Int) {
-        self.currentSheetCount = sheetCount
-        self.currentRangeMin = rangeMin
-        self.currentRangeMax = rangeMax
-        self.totalPageCount = pageCount
-        
+    
+    func updatePerPage() {
         collection.reloadData()
     }
     
-    func processMakeNewPDFImagesUrls() -> [URL] {
-        var urls: [URL] = []
-        
-        for indexPathItem in 0..<totalPageCount {
-            let canvasBgV = UIView(frame: CGRect(x: 0, y: 0, width: pdfWidth, height: pdfHeight))
-            //
-            var perPages: [Int] = []
-            let perPageIndexBegin = indexPathItem * currentSheetCount
-            for idx in 0..<currentSheetCount {
-                let pagecount = perPageIndexBegin + idx
-                if pagecount < pdfCount {
-                    perPages.append(pagecount)
-                }
-            }
-            
-            var imgVs: [UIImageView] = []
-            for pageIdx in perPages {
-                let imgV = UIImageView()
-                imgV.contentMode = .scaleAspectFit
-                canvasBgV.addSubview(imgV)
-                imgVs.append(imgV)
-                
-                if let imgurl = self.urlPathListDict["\(pageIdx)"] {
-                    imgV.image = try? UIImage(url: imgurl)
-                }
-            }
-            
-            if currentSheetCount == 1 {
-                let img0 = imgVs[0]
-                img0.frame = CGRect(x: 0, y: 0, width: canvasBgV.bounds.size.width, height: canvasBgV.bounds.size.height)
-            } else if currentSheetCount == 2 {
-                layoutImgsFrame(imgVs: imgVs, widCount: 1, heiCount: 2, perWid: canvasBgV.bounds.size.width, perHei: canvasBgV.bounds.size.height/2)
-            } else if currentSheetCount == 4 {
-                layoutImgsFrame(imgVs: imgVs, widCount: 2, heiCount: 2, perWid: canvasBgV.bounds.size.width/2, perHei: canvasBgV.bounds.size.height/2)
-            } else if currentSheetCount == 6 {
-                layoutImgsFrame(imgVs: imgVs, widCount: 3, heiCount: 2, perWid: canvasBgV.bounds.size.width/3, perHei: canvasBgV.bounds.size.height/2)
-            } else if currentSheetCount == 9 {
-                layoutImgsFrame(imgVs: imgVs, widCount: 3, heiCount: 3, perWid: canvasBgV.bounds.size.width/3, perHei: canvasBgV.bounds.size.height/3)
-            } else if currentSheetCount == 16 {
-                layoutImgsFrame(imgVs: imgVs, widCount: 4, heiCount: 4, perWid: canvasBgV.bounds.size.width/4, perHei: canvasBgV.bounds.size.height/4)
-            }
-            
-            if let bigImg = canvasBgV.screenshot {
-                let dateStr = CLongLong(round(Date().unixTimestamp*1000)).string
-                let filePath = NSTemporaryDirectory() + "\(dateStr)\(".jpg")"
-                let fileUrl = URL(fileURLWithPath: filePath)
-                if let imgdata = bigImg.jpegData(compressionQuality: 0.8) {
-                    do {
-                        try imgdata.write(to: fileUrl)
-                        urls.append(fileUrl)
-                    } catch {
-                        
-                    }
-                }
-            }
-        }
-        
-        return urls
-    }
+//    func updatePerPage(sheetCount: Int, rangeMin: Int, rangeMax: Int, pageCount: Int) {
+//        self.currentSheetCount = sheetCount
+//        self.currentRangeMin = rangeMin
+//        self.currentRangeMax = rangeMax
+//        self.totalPageCount = pageCount
+//
+//
+//    }
     
-    init(frame: CGRect, pdfDocument: PDFDocument, rangeMin: Int, rangeMax: Int , pageCount: Int) {
-        self.pdfCount = pdfDocument.pageCount
-        self.pdfDocument = pdfDocument
-        self.totalPageCount = pageCount
-        self.currentRangeMin = rangeMin
-        self.currentRangeMax = rangeMax
-        super.init(frame: frame)
-        
+    override init(frame: CGRect) {
+        super.init(frame: frame )
         setupV()
-        loadPdfBigImg()
     }
     
+    
+//    init(frame: CGRect, rangeMin: Int, rangeMax: Int , pageCount: Int) {
+//        self.pdfCount = pdfDocument.pageCount
+//        self.pdfDocument = pdfDocument
+//        self.totalPageCount = pageCount
+//        self.currentRangeMin = rangeMin
+//        self.currentRangeMax = rangeMax
+//        super.init(frame: frame)
+//        
+//        
+//        
+//    }
+//    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func loadPdfBigImg() {
-        
-        let pdfPageSize = CGRect(x: 0, y: 0, width: pdfWidth, height: pdfHeight)
-        
-        loadPdfPhotoGroup = DispatchGroup()
-        
-        urlPathListDict.removeAll()
-        
-        for pageIdx in 0..<pdfDocument.pageCount {
-            if let page = pdfDocument.page(at: pageIdx) {
-                let pageNumber = pageIdx
-                let key = NSNumber(value: pageNumber)
-                let size = pdfPageSize.size
-                loadPdfPhotoGroup.enter()
-                downloadQueue_big.async {
-                    [weak self] in
-                    guard let `self` = self else {return}
-                    let thumbnail = page.thumbnail(of: size, for: .cropBox)
-                    self.loadPdfPhotoGroup.leave()
-                    //
-                    let dateStr = CLongLong(round(Date().unixTimestamp*1000)).string
-                    let filePath = NSTemporaryDirectory() + "\(dateStr)\(".jpg")"
-                    let fileUrl = URL(fileURLWithPath: filePath)
-                    if let imgdata = thumbnail.jpegData(compressionQuality: 0.8) {
-                        try? imgdata.write(to: fileUrl)
-                    }
-                    
-                    //
-                    self.urlPathListDict["\(pageIdx)"] = fileUrl
-                    
-                }
-            }
-        }
-        
-        
-        loadPdfPhotoGroup.notify(queue: DispatchQueue.main) {
-            [weak self] in
-            guard let `self` = self else {return}
-            self.hasloadBigPDFImg = true
-            debugPrint("has load big pdf image")
-        }
-        
-        
-    }
+    
     
 //    func updatePdfData(document: PDFDocument) {
 //        pdfDocument = document
@@ -165,10 +67,14 @@ class PRinPdfPreviewCollection: UIView {
 //
 //    }
     
-    func updatePdfRange(min: Int, max: Int) {
-        currentRangeMin = min
-        currentRangeMax = max
+    func updatePdfRange() {
+//        currentRangeMin = min
+//        currentRangeMax = max
         collection.reloadData()
+    }
+    
+    func updateContentSize() {
+        
     }
     
     func setupV() {
@@ -194,33 +100,20 @@ class PRinPdfPreviewCollection: UIView {
 
 extension PRinPdfPreviewCollection: UICollectionViewDataSource {
     
-    func layoutImgsFrame(imgVs: [UIImageView], widCount: Int, heiCount: Int, perWid: CGFloat, perHei: CGFloat) {
-        
-        let wid: CGFloat = perWid
-        let hei: CGFloat = perHei
-        var originx: CGFloat = 0
-        var originy: CGFloat = 0
-        
-        for (indx, imgv) in imgVs.enumerated() {
-            let chu = indx / widCount
-            let yu = indx % widCount
-            originy = CGFloat(chu) * hei
-            originx = CGFloat(yu) * wid
-            imgv.frame = CGRect(x: originx, y: originy, width: wid, height: hei)
-        }
-    }
+    
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withClass: PDFThumbnailGridCell.self, for: indexPath)
         
         cell.canvasBgV.removeSubviews()
  
+        let currentSheetCount = PRPrinterManager.default.currentSheetStr.int ?? 1
         //
         var perPages: [Int] = []
         let perPageIndexBegin = indexPath.item * currentSheetCount
         for idx in 0..<currentSheetCount {
             let pagecount = perPageIndexBegin + idx
-            if pagecount < pdfCount {
+            if pagecount < PRPrinterManager.default.document.pageCount {
                 perPages.append(pagecount)
             }
         }
@@ -231,7 +124,8 @@ extension PRinPdfPreviewCollection: UICollectionViewDataSource {
             imgV.contentMode = .scaleAspectFit
             cell.canvasBgV.addSubview(imgV)
             imgVs.append(imgV)
-            if let page = pdfDocument.page(at: pageIdx) {
+            
+            if let page = PRPrinterManager.default.document.page(at: pageIdx) {
                 let pageNumber = pageIdx
                 let key = NSNumber(value: pageNumber)
                 if let thumbnail = thumbnailCache.object(forKey: key) {
@@ -255,22 +149,27 @@ extension PRinPdfPreviewCollection: UICollectionViewDataSource {
             let img0 = imgVs[0]
             img0.frame = CGRect(x: 0, y: 0, width: cell.bounds.size.width, height: cell.bounds.size.height)
         } else if currentSheetCount == 2 {
-            layoutImgsFrame(imgVs: imgVs, widCount: 1, heiCount: 2, perWid: cell.bounds.size.width, perHei: cell.bounds.size.height/2)
+            PRPrinterManager.default.layoutImgsFrame(imgVs: imgVs, widCount: 1, heiCount: 2, perWid: cell.bounds.size.width, perHei: cell.bounds.size.height/2)
         } else if currentSheetCount == 4 {
-            layoutImgsFrame(imgVs: imgVs, widCount: 2, heiCount: 2, perWid: cell.bounds.size.width/2, perHei: cell.bounds.size.height/2)
+            PRPrinterManager.default.layoutImgsFrame(imgVs: imgVs, widCount: 2, heiCount: 2, perWid: cell.bounds.size.width/2, perHei: cell.bounds.size.height/2)
         } else if currentSheetCount == 6 {
-            layoutImgsFrame(imgVs: imgVs, widCount: 3, heiCount: 2, perWid: cell.bounds.size.width/3, perHei: cell.bounds.size.height/2)
+            PRPrinterManager.default.layoutImgsFrame(imgVs: imgVs, widCount: 3, heiCount: 2, perWid: cell.bounds.size.width/3, perHei: cell.bounds.size.height/2)
         } else if currentSheetCount == 9 {
-            layoutImgsFrame(imgVs: imgVs, widCount: 3, heiCount: 3, perWid: cell.bounds.size.width/3, perHei: cell.bounds.size.height/3)
+            PRPrinterManager.default.layoutImgsFrame(imgVs: imgVs, widCount: 3, heiCount: 3, perWid: cell.bounds.size.width/3, perHei: cell.bounds.size.height/3)
         } else if currentSheetCount == 16 {
-            layoutImgsFrame(imgVs: imgVs, widCount: 4, heiCount: 4, perWid: cell.bounds.size.width/4, perHei: cell.bounds.size.height/4)
+            PRPrinterManager.default.layoutImgsFrame(imgVs: imgVs, widCount: 4, heiCount: 4, perWid: cell.bounds.size.width/4, perHei: cell.bounds.size.height/4)
         }
-          
+        
+        cell.allPage = PRPrinterManager.default.currentSheetTotalPageCount
         cell.pageNumber = indexPath.item
-        if indexPath.item + 1 >= currentRangeMin && indexPath.item + 1 <= currentRangeMax {
+        cell.canvasBgV.layer.borderColor = UIColor.black.cgColor
+        
+        if indexPath.item + 1 >= PRPrinterManager.default.currentRangeMin && indexPath.item + 1 <= PRPrinterManager.default.currentRangeMax {
             cell.isHighlighted = true
+            cell.canvasBgV.layer.borderWidth = 2
         } else {
             cell.isHighlighted = false
+            cell.canvasBgV.layer.borderWidth = 0
         }
         
         
@@ -279,7 +178,7 @@ extension PRinPdfPreviewCollection: UICollectionViewDataSource {
     
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return totalPageCount
+        return PRPrinterManager.default.currentSheetTotalPageCount
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -291,7 +190,8 @@ extension PRinPdfPreviewCollection: UICollectionViewDataSource {
 extension PRinPdfPreviewCollection: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let wid: CGFloat = (UIScreen.main.bounds.width - 24 * 2 - (10 * 2) - 1) / 2
-        return CGSize(width: wid, height: wid * 297.0/210.0)
+        
+        return CGSize(width: wid, height: wid / (PRPrinterManager.default.currentPaperSizeItem.pwidth / PRPrinterManager.default.currentPaperSizeItem.pheight))
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
@@ -303,7 +203,7 @@ extension PRinPdfPreviewCollection: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 100
+        return 200
     }
     
 }
@@ -329,13 +229,13 @@ class PDFThumbnailGridCell: UICollectionViewCell {
     // MARK: - Variables
     override var isHighlighted: Bool {
         didSet {
-            self.alpha = isHighlighted ? 1 : 0.8
+//            self.alpha = isHighlighted ? 1 : 0.4
         }
     }
-
+    var allPage: Int = 1
     var pageNumber = 0 {
         didSet {
-            pageNumberLabel.text = String(pageNumber)
+            pageNumberLabel.text = "Page \(pageNumber+1) of \(allPage)"
         }
     }
 
@@ -357,14 +257,29 @@ class PDFThumbnailGridCell: UICollectionViewCell {
         canvasBgV.snp.makeConstraints {
             $0.left.right.top.bottom.equalToSuperview()
         }
+        
+        //
+        let pageNumbBgV = UIView()
+        contentView.addSubview(pageNumbBgV)
+        pageNumbBgV.backgroundColor = UIColor.black.withAlphaComponent(0.6)
+        
         //
         contentView.addSubview(pageNumberLabel)
         pageNumberLabel.snp.makeConstraints {
-            $0.bottom.right.equalToSuperview().offset(-5)
+            $0.bottom.equalToSuperview().offset(-20)
+            $0.centerX.equalToSuperview()
             $0.width.height.greaterThanOrEqualTo(10)
         }
-        pageNumberLabel.textColor = UIColor.darkGray
-        pageNumberLabel.font = UIFont(name: "SFProText-Black", size: 12)
+        pageNumberLabel.textColor = UIColor.white
+        pageNumberLabel.font = UIFont(name: "SFProText-Black", size: 8)
+        pageNumberLabel.adjustsFontSizeToFitWidth = true
+        pageNumbBgV.snp.makeConstraints {
+            $0.center.equalTo(pageNumberLabel)
+            $0.height.equalTo(20)
+            $0.left.equalTo(pageNumberLabel.snp.left).offset(-10)
+            $0.right.equalTo(pageNumberLabel.snp.right).offset(10)
+        }
+        pageNumbBgV.layer.cornerRadius = 10
         
     }
     

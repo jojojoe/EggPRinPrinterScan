@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import Photos
+import YPImagePicker
 
 class PRPrinterViewController: UIViewController {
 
@@ -169,14 +171,17 @@ class PRPrinterViewController: UIViewController {
     }
     
     @objc func photoBtnClick(sender: UIButton) {
-        
+        checkAlbumAuthorization()
     }
     
     @objc func clipboardBtnClick(sender: UIButton) {
-        
+        let vc = PRPrinterClipboardVC()
+        self.navigationController?.pushViewController(vc, animated: true)
     }
     
     @objc func webBtnClick(sender: UIButton) {
+        let vc = PRPrinterWebPrinterVC()
+        self.navigationController?.pushViewController(vc, animated: true)
         
     }
     
@@ -276,6 +281,21 @@ class PRinMPrintBottomBtn: UIButton {
     
 }
 
+extension PRPrinterViewController {
+    
+    func showPrinterVC(images: [UIImage]) {
+        DispatchQueue.main.async {
+            [weak self] in
+            guard let `self` = self else {return}
+            let targetUrl = PRPrinterManager.default.porcessImgToPDF(images: images)
+            let pageOptionVC = PRPrinterOptionsVC(contentUrl: targetUrl)
+            self.mainVC.navigationController?.pushViewController(pageOptionVC, animated: true)
+        }
+    }
+    
+    
+}
+
 extension PRPrinterViewController: UIDocumentPickerDelegate {
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
         if controller.documentPickerMode == .import {
@@ -288,10 +308,130 @@ extension PRPrinterViewController: UIDocumentPickerDelegate {
                     let pageOptionVC = PRPrinterOptionsVC(contentUrl: targetUrl)
                     self.mainVC.navigationController?.pushViewController(pageOptionVC, animated: true)
                 }
-
             }
         }
     }
 }
 
+extension PRPrinterViewController: UIImagePickerControllerDelegate {
+    
+    func checkAlbumAuthorization() {
+        
+        if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
+            if #available(iOS 14, *) {
+                PHPhotoLibrary.requestAuthorization(for: .readWrite) { status in
+                    switch status {
+                    case .authorized:
+                        DispatchQueue.main.async {
+                            self.presentLimitedPhotoPickerController()
+                        }
+                    case .limited:
+                        DispatchQueue.main.async {
+                            self.presentLimitedPhotoPickerController()
+                        }
+                    case .notDetermined:
+                        if status == PHAuthorizationStatus.authorized {
+                            DispatchQueue.main.async {
+                                self.presentLimitedPhotoPickerController()
+                            }
+                        } else if status == PHAuthorizationStatus.limited {
+                            DispatchQueue.main.async {
+                                self.presentLimitedPhotoPickerController()
+                            }
+                        }
+                    case .denied:
+                        DispatchQueue.main.async {
+                            [weak self] in
+                            guard let `self` = self else {return}
+                            self.showPhotoDeniedAlert()
+                        }
+                    case .restricted:
+                        DispatchQueue.main.async {
+                            [weak self] in
+                            guard let `self` = self else {return}
+                            self.showPhotoDeniedAlert()
+                        }
+                    default: break
+                    }
+                }
+            } else {
+                
+                PHPhotoLibrary.requestAuthorization { status in
+                    switch status {
+                    case .authorized:
+                        DispatchQueue.main.async {
+                            self.presentLimitedPhotoPickerController()
+                        }
+                    case .limited:
+                        DispatchQueue.main.async {
+                            self.presentLimitedPhotoPickerController()
+                        }
+                    case .denied:
+                        DispatchQueue.main.async {
+                            [weak self] in
+                            guard let `self` = self else {return}
+                            self.showPhotoDeniedAlert()
+                        }
+                        
+                    case .restricted:
+                        DispatchQueue.main.async {
+                            [weak self] in
+                            guard let `self` = self else {return}
+                            self.showPhotoDeniedAlert()
+                        }
+                    default: break
+                    }
+                }
+            }
+        }
+    }
+    
+    func showPhotoDeniedAlert() {
+        let alert = UIAlertController(title: "Oops", message: "You have declined access to photos, please active it in Settings>Privacy>Photos.", preferredStyle: .alert)
+        let confirmAction = UIAlertAction(title: "Ok", style: .default, handler: { (goSettingAction) in
+            DispatchQueue.main.async {
+                let url = URL(string: UIApplication.openSettingsURLString)!
+                UIApplication.shared.open(url, options: [:])
+            }
+        })
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+        alert.addAction(confirmAction)
+        alert.addAction(cancelAction)
+        
+        self.present(alert, animated: true)
+    }
+    
+    func presentLimitedPhotoPickerController() {
+        var config = YPImagePickerConfiguration()
+        config.library.maxNumberOfItems = 9
+        config.screens = [.library]
+        config.library.defaultMultipleSelection = true
+        config.library.skipSelectionsGallery = true
+        config.showsPhotoFilters = false
+        config.library.preselectedItems = nil
+        let picker = YPImagePicker(configuration: config)
+        picker.view.backgroundColor = UIColor.white
+        picker.didFinishPicking { [unowned picker] items, cancelled in
+            var imgs: [UIImage] = []
+            for item in items {
+                switch item {
+                case .photo(let photo):
+                    if let img = photo.image.scaled(toWidth: 1200) {
+                        imgs.append(img)
+                    }
+                    print(photo)
+                case .video(let video):
+                    print(video)
+                }
+            }
+            picker.dismiss(animated: true, completion: nil)
+            if !cancelled {
+                self.showPrinterVC(images: imgs)
+            }
+        }
+        
+        present(picker, animated: true, completion: nil)
+    }
+    
+}
 

@@ -11,6 +11,12 @@ import WebKit
 import YPImagePicker
 import Photos
 import SwifterSwift
+import Vision
+import VisionKit
+import PDFKit
+
+// https://www.cnblogs.com/frounk/p/16853689.html
+
 
 class ViewController: UIViewController {
 
@@ -78,12 +84,12 @@ class ViewController: UIViewController {
         view.addSubview(contentBgV)
         contentBgV.snp.makeConstraints {
             $0.left.right.top.equalToSuperview()
-            $0.bottom.equalTo(bottomBar.snp.top).offset(-1)
+            $0.bottom.equalTo(bottomBar.snp.top).offset(0)
         }
         //
         let bottomLine = UIView()
         view.addSubview(bottomLine)
-        bottomLine.backgroundColor = UIColor(hexString: "#CCCCCC")?.withAlphaComponent(0.6)
+        bottomLine.backgroundColor = UIColor(hexString: "#CCCCCC")?.withAlphaComponent(0.35)
         bottomLine.snp.makeConstraints {
             $0.left.right.equalToSuperview()
             $0.bottom.equalTo(bottomBar.snp.top)
@@ -112,18 +118,9 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        setupContentV()
-//
-//        printBtnClick(sender: printBtn)
-        
-        //
-        let rangeV = PRinPageRangeSelectView()
-        view.addSubview(rangeV)
-        rangeV.snp.makeConstraints {
-            $0.center.equalToSuperview()
-            $0.width.equalToSuperview()
-            $0.height.equalTo(300)
-        }
+        setupContentV()
+
+        printBtnClick(sender: printBtn)
         
     }
  
@@ -132,7 +129,9 @@ class ViewController: UIViewController {
 
 extension ViewController {
     @objc func scaneBtnClick(sender: UIButton) {
-        
+        let scanningDocumentVC = VNDocumentCameraViewController()
+        scanningDocumentVC.delegate = self
+        self.present(scanningDocumentVC, animated: true, completion: nil)
     }
     
     @objc func printBtnClick(sender: UIButton) {
@@ -214,4 +213,57 @@ class PRinMainBottomBtn: UIButton {
     
     
     
+}
+
+extension ViewController: VNDocumentCameraViewControllerDelegate {
+    
+    func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFinishWith scan: VNDocumentCameraScan) {
+        
+        guard scan.pageCount >= 1 else {
+            controller.dismiss(animated: true)
+            return
+        }
+        debugPrint("Found \(scan.pageCount)")
+        
+        let pdfDocument = PDFDocument()
+        for i in 0 ..< scan.pageCount {
+            let img = scan.imageOfPage(at: i)
+            // ... your code here
+            let pdfPage = PDFPage(image: img)
+            pdfDocument.insert(pdfPage!, at: i)
+        }
+        let data = pdfDocument.dataRepresentation()
+        
+        let dateStr = CLongLong(round(Date().unixTimestamp*1000)).string
+        let filePath = NSTemporaryDirectory() + "\(dateStr)\(".pdf")"
+        let fileUrl = URL(fileURLWithPath: filePath)
+        
+        
+        do{
+            debugPrint("Documet: \(filePath)")
+            try data?.write(to: fileUrl)
+        } catch(let error) {
+            print("error is \(error.localizedDescription)")
+        }
+//        let originalImage = scan.imageOfPage(at: 0)
+//        let newImage = compressedImage(originalImage)
+        controller.dismiss(animated: true)
+//        processImage(newImage)
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.5) {
+            [weak self] in
+            guard let `self` = self else {return}
+            let pageOptionVC = PRPrinterOptionsVC(contentUrl: fileUrl)
+            self.navigationController?.pushViewController(pageOptionVC, animated: true)
+        }
+    }
+    
+    func documentCameraViewControllerDidCancel(_ controller: VNDocumentCameraViewController) {
+        controller.dismiss(animated: true)
+    }
+    
+    func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFailWithError error: Error) {
+        print(error)
+        
+        controller.dismiss(animated: true)
+    }
 }

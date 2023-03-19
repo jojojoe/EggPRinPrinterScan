@@ -10,49 +10,24 @@ import WebKit
 import PDFKit
 import KRProgressHUD
 
-let pdfWidth: CGFloat = 595
-let pdfHeight: CGFloat = 842
 
 
 class PRPrinterOptionsVC: UIViewController {
     
+    var contentUrl: URL
     let pdfPreviewBgV = UIView()
     let pageRangeInfoL = UILabel()
-    var contentUrl: URL
+    
     let printerNameL = UILabel()
     var copiesCount: Int = 1 {
         didSet {
             copiesCountL.text = "\(copiesCount)"
         }
     }
+    
     let copiesCountL = UILabel()
-    
-    var rangeMin: Int = 1 {
-        didSet {
-            if rangeMax == 1 {
-                pageRangeInfoL.text = "Page \(rangeMin)"
-            } else {
-                pageRangeInfoL.text = "Pages \(rangeMin)-\(rangeMax)"
-            }
-        }
-    }
-    var rangeMax: Int = 1 {
-        didSet {
-            if rangeMax == 1 {
-                pageRangeInfoL.text = "Page \(rangeMin)"
-            } else {
-                pageRangeInfoL.text = "Pages \(rangeMin)-\(rangeMax)"
-            }
-        }
-    }
-    var currentTotalPageCount: Int = 1 // 下面预览的总页面数（选择完每页展示多少pdf page 后的页面数 小于 pdf的文件页面个数 ）
-    
-    var pageSizeStr = "A4"
-    var currentSheetStr: String = "1"
-    
-    
-    var document: PDFDocument = PDFDocument()
-    var previewCollection: PRinPdfPreviewCollection?
+    let pageSizeInfoL = UILabel()
+    var previewCollection = PRinPdfPreviewCollection()
     
     init(contentUrl: URL) {
         self.contentUrl = contentUrl
@@ -270,7 +245,7 @@ class PRPrinterOptionsVC: UIViewController {
         pageRangeSelectBtn.addSubview(pageRangeInfoL)
         pageRangeInfoL.textColor = UIColor(hexString: "#999999")
         pageRangeInfoL.font = UIFont(name: "SFProText-Regular", size: 14)
-        pageRangeInfoL.text = "Pages \(rangeMin)-\(rangeMax)"
+        pageRangeInfoL.text = "Pages "
         pageRangeInfoL.textAlignment = .right
         pageRangeInfoL.lineBreakMode = .byTruncatingTail
         pageRangeInfoL.snp.makeConstraints {
@@ -279,6 +254,8 @@ class PRPrinterOptionsVC: UIViewController {
             $0.height.greaterThanOrEqualTo(10)
             $0.left.equalTo(printerSelectBtn.snp.left).offset(80)
         }
+        pageRangeSelectBtn.addTarget(self, action: #selector(pageRangeSelectBtnClick(sender: )), for: .touchUpInside)
+       
         //
         let line1 = UIView()
         line1.backgroundColor = UIColor(hexString: "#F5F5F5")
@@ -326,11 +303,11 @@ class PRPrinterOptionsVC: UIViewController {
             $0.height.equalTo(24/2)
         }
         //
-        let pageSizeInfoL = UILabel()
+        
         pageSizeSelectBtn.addSubview(pageSizeInfoL)
         pageSizeInfoL.textColor = UIColor(hexString: "#999999")
         pageSizeInfoL.font = UIFont(name: "SFProText-Regular", size: 14)
-        pageSizeInfoL.text = "\(pageSizeStr)"
+        pageSizeInfoL.text = "\(PRPrinterManager.default.currentPaperSizeItem.name)"
         pageSizeInfoL.textAlignment = .right
         pageSizeInfoL.lineBreakMode = .byTruncatingTail
         pageSizeInfoL.snp.makeConstraints {
@@ -410,7 +387,8 @@ class PRPrinterOptionsVC: UIViewController {
             do {
                 let targetimg = try UIImage(url: targetUrl)
                 if let img = targetimg {
-                    let pdfdata = porcessImgToPDF(image: img)
+                    
+                    let pdfdata = PRPrinterManager.default.porcessImgToPDF(image: img)
                     if let docu = PDFDocument(data: pdfdata) {
                         self.processDocumentWith(docu: docu)
                     }
@@ -465,24 +443,22 @@ class PRPrinterOptionsVC: UIViewController {
     
     func processDocumentWith(docu: PDFDocument) {
         //
-        self.document = docu
-        self.rangeMin = 1
-        let totalPageCount = sheetPageTotalCount(sheet: currentSheetStr.int ?? 1)
-        rangeMin = 1
-        rangeMax = totalPageCount
+        PRPrinterManager.default.document = docu
+        PRPrinterManager.default.loadPdfBigImg()
+        PRPrinterManager.default.currentRangeMin = 1
+        PRPrinterManager.default.currentRangeMax = PRPrinterManager.default.document.pageCount
+        PRPrinterManager.default.currentSheetTotalPageCount = PRPrinterManager.default.document.pageCount
         
         
-        
-        
-        self.rangeMax = self.document.pageCount
-        self.previewCollection = PRinPdfPreviewCollection(frame: .zero, pdfDocument: self.document, rangeMin: self.rangeMin, rangeMax: self.rangeMax, pageCount: totalPageCount)
-        pdfPreviewBgV.addSubview(self.previewCollection!)
-        self.previewCollection!.snp.makeConstraints {
+        previewCollection.updatePerPage()
+        pdfPreviewBgV.addSubview(self.previewCollection)
+        self.previewCollection.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.left.right.equalToSuperview()
             $0.height.equalToSuperview()
         }
         
+        updatePageRangeInfoLabel()
     }
     
     
@@ -500,14 +476,12 @@ extension PRPrinterOptionsVC {
     }
     
     @objc func printerBtnClick(sender: UIButton) {
-        if currentSheetStr == "1" {
+        
+        if PRPrinterManager.default.currentSheetStr == "1" {
             showSystemPrinter(urls: [contentUrl])
         } else {
-            if let previewCo = previewCollection {
-                let resultUlrs = previewCo.processMakeNewPDFImagesUrls()
-                showSystemPrinter(urls: resultUlrs)
-            }
-
+            let resultUlrs = PRPrinterManager.default.processMakeNewPDFImagesUrls()
+            showSystemPrinter(urls: resultUlrs)
         }
     }
     
@@ -528,34 +502,28 @@ extension PRPrinterOptionsVC {
         }
     }
     
-    @objc func pageSizeSelectBtnClick(sender: UIButton) {
-        
+    @objc func pageRangeSelectBtnClick(sender: UIButton) {
+        let rangeSelectVC = PRPrinterPageRangeSelectVC()
+        rangeSelectVC.homeVC = self
+        self.navigationController?.pushViewController(rangeSelectVC, animated: true)
     }
     
-    func sheetPageTotalCount(sheet: Int) -> Int {
-        var sheetPageCount: Int = 0
+    @objc func pageSizeSelectBtnClick(sender: UIButton) {
+        let pageSizeVC = PRPrinterPageSizeSelectVC()
+        pageSizeVC.homeVC = self
+        self.navigationController?.pushViewController(pageSizeVC, animated: true)
         
-        let perCount: Int = sheet
-        let documentPageCount = document.pageCount
-        let chushu = documentPageCount / perCount
-        let yushu = documentPageCount % perCount
-        if yushu == 0 {
-            sheetPageCount = chushu
-        } else {
-            sheetPageCount = chushu + 1
-        }
-        currentTotalPageCount = sheetPageCount
-        return sheetPageCount
+        
     }
     
     func updatePerSheetCount(sheetStr: String) {
-        currentSheetStr = sheetStr
-        let sheetCou = sheetStr.int ?? 1
-        let totalPageCount = sheetPageTotalCount(sheet: sheetCou)
-        rangeMin = 1
-        rangeMax = totalPageCount
+//        currentSheetStr = sheetStr
+//        let sheetCou = sheetStr.int ?? 1
         
-        self.previewCollection?.updatePerPage(sheetCount: sheetCou, rangeMin: rangeMin, rangeMax: rangeMax, pageCount: totalPageCount)
+        PRPrinterManager.default.updateAndProcessSheetPageTotalCount(sheetStr: sheetStr)
+        
+        self.previewCollection.updatePerPage()
+        updatePageRangeInfoLabel()
         
     }
     
@@ -576,86 +544,27 @@ extension PRPrinterOptionsVC {
         }
     }
     
-}
-
-extension PRPrinterOptionsVC {
-    
-    func porcessImgToPDF(image: UIImage) -> Data {
+    func updatePageRangeInfoLabel() {
         
-        let pdfData = NSMutableData()
-        UIGraphicsBeginPDFContextToData(pdfData, .zero, nil)
-        let bounds = UIGraphicsGetPDFContextBounds()
-        let pdfWidth = bounds.size.width
-        let pdfHeight = bounds.size.height
-        UIGraphicsBeginPDFPage()
-        let imageW = image.size.width
-        let imageH = image.size.height
-        if (imageW <= pdfWidth && imageH <= pdfHeight) {
-            let originX = (pdfWidth - imageW) / 2
-            let originY = (pdfHeight - imageH) / 2
-            image.draw(in: CGRect(x: originX, y: originY, width: imageW, height: imageH))
-
+        if PRPrinterManager.default.currentRangeMax == 1 {
+            pageRangeInfoL.text = "Page \(PRPrinterManager.default.currentRangeMin)"
         } else {
-            var widthm: CGFloat = 0
-            var heightm: CGFloat = 0
-            
-            if ((imageW / imageH) > (pdfWidth / pdfHeight)) {
-                widthm = pdfWidth
-                heightm = widthm * imageH / imageW
-            } else {
-                heightm = pdfHeight;
-                widthm = heightm * imageW / imageH;
-            }
-            image.draw(in: CGRect(x: (pdfWidth - widthm) / 2, y: (pdfHeight - heightm) / 2, width: widthm, height: heightm))
-            
+            pageRangeInfoL.text = "Pages \(PRPrinterManager.default.currentRangeMin)-\(PRPrinterManager.default.currentRangeMax)"
         }
-        UIGraphicsEndPDFContext()
-        
-        return Data(pdfData)
     }
     
-    
-    func porcessImgToPDF(images: [UIImage]) -> URL {
-        
-        let dateStr = CLongLong(round(Date().unixTimestamp*1000)).string
-        let filePath = NSTemporaryDirectory() + "\(dateStr)\(".pdf")"
-        
-        UIGraphicsBeginPDFContextToFile(filePath, .zero, nil)
-        
-        let bounds = UIGraphicsGetPDFContextBounds()
-        let pdfWidth = bounds.size.width
-        let pdfHeight = bounds.size.height
-        
-        for image in images {
-            
-            UIGraphicsBeginPDFPage()
-            let imageW = image.size.width
-            let imageH = image.size.height
-            if (imageW <= pdfWidth && imageH <= pdfHeight) {
-                let originX = (pdfWidth - imageW) / 2
-                let originY = (pdfHeight - imageH) / 2
-                image.draw(in: CGRect(x: originX, y: originY, width: imageW, height: imageH))
-            } else {
-                var widthm: CGFloat = 0
-                var heightm: CGFloat = 0
-                
-                if ((imageW / imageH) > (pdfWidth / pdfHeight)) {
-                    widthm = pdfWidth
-                    heightm = widthm * imageH / imageW
-                } else {
-                    heightm = pdfHeight;
-                    widthm = heightm * imageW / imageH;
-                }
-                image.draw(in: CGRect(x: (pdfWidth - widthm) / 2, y: (pdfHeight - heightm) / 2, width: widthm, height: heightm))
-            }
-        }
-        
-        UIGraphicsEndPDFContext()
-        let url = URL(fileURLWithPath: filePath)
-        return url
+    func updatePageRange() {
+        self.updatePageRangeInfoLabel()
+        self.previewCollection.updatePdfRange()
     }
     
+    func updatePaperSize() {
+        pageSizeInfoL.text = PRPrinterManager.default.currentPaperSizeItem.name
+        previewCollection.collection.reloadData()
+    }
 }
+
+
 
 
 extension PRPrinterOptionsVC {
@@ -693,13 +602,13 @@ extension PRPrinterOptionsVC {
         render.addPrintFormatter(fmt, startingAtPageAt: 0)
 //        let page = CGRect(x: 0, y: 0, width: 210, height: 297)
         
-        let page = CGRect(x: 0, y: 0, width: pdfWidth, height: pdfHeight)
+        let page = CGRect(x: 0, y: 0, width: PRPrinterManager.default.currentPaperSizeItem.pwidth, height: PRPrinterManager.default.currentPaperSizeItem.pheight)
         let printable = CGRectInset(page, 20, 20)
         render.setValue(page, forKey: "paperRect")
         render.setValue(printable, forKey: "printableRect")
         
         let pdfData = NSMutableData()
-        UIGraphicsBeginPDFContextToData(pdfData, CGRectZero, nil)
+        UIGraphicsBeginPDFContextToData(pdfData, page, nil)
         
         for i in 0..<render.numberOfPages {
             UIGraphicsBeginPDFPage()

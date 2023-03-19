@@ -8,12 +8,17 @@
 
 /* Begin PBXBuildFile section */
 		CF08BCE175467341ED94CCC5 /* Pods_PRinPrinterScan.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 177FCA851F9A526872B9AD47 /* Pods_PRinPrinterScan.framework */; };
+		D84CEBED29C5AAF500E9841E /* PRPrinterManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D84CEBEC29C5AAF500E9841E /* PRPrinterManager.swift */; };
+		D84CEBEF29C6B82300E9841E /* PRPrinterClipboardVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D84CEBEE29C6B82300E9841E /* PRPrinterClipboardVC.swift */; };
+		D84CEBF129C70A5A00E9841E /* PRPrinterWebPrinterVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D84CEBF029C70A5A00E9841E /* PRPrinterWebPrinterVC.swift */; };
 		D85872B529BC173700557743 /* qing.pdf in Resources */ = {isa = PBXBuildFile; fileRef = D85872B429BC173700557743 /* qing.pdf */; };
 		D8F43EA729BCAD60006932B0 /* 1.png in Resources */ = {isa = PBXBuildFile; fileRef = D8F43EA629BCAD60006932B0 /* 1.png */; };
 		D8F43EA929BCAD8B006932B0 /* 2.png in Resources */ = {isa = PBXBuildFile; fileRef = D8F43EA829BCAD8A006932B0 /* 2.png */; };
 		D8F43EAB29BF5875006932B0 /* PRinHomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F43EAA29BF5875006932B0 /* PRinHomeVC.swift */; };
 		D8F43EAD29BF6C3C006932B0 /* PRPrinterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F43EAC29BF6C3C006932B0 /* PRPrinterViewController.swift */; };
 		D8F43EAF29C0BEDC006932B0 /* PRinPdfPreviewCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F43EAE29C0BEDC006932B0 /* PRinPdfPreviewCollection.swift */; };
+		D8F43EB129C4AA2F006932B0 /* PRPrinterPageRangeSelectVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F43EB029C4AA2F006932B0 /* PRPrinterPageRangeSelectVC.swift */; };
+		D8F43EB329C4AC35006932B0 /* PRPrinterPageSizeSelectVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F43EB229C4AC35006932B0 /* PRPrinterPageSizeSelectVC.swift */; };
 		EB10183829BB191A00FC51C9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB10183729BB191A00FC51C9 /* AppDelegate.swift */; };
 		EB10183A29BB191A00FC51C9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB10183929BB191A00FC51C9 /* SceneDelegate.swift */; };
 		EB10183C29BB191A00FC51C9 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB10183B29BB191A00FC51C9 /* ViewController.swift */; };
@@ -79,20 +84,23 @@
 		EB64967E29C02A76006D88F8 /* SF-Pro-Text-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = EB64967929C02A75006D88F8 /* SF-Pro-Text-Regular.otf */; };
 		EB64967F29C02A76006D88F8 /* SF-Pro-Text-Semibold.otf in Resources */ = {isa = PBXBuildFile; fileRef = EB64967A29C02A76006D88F8 /* SF-Pro-Text-Semibold.otf */; };
 		EB64968129C06A03006D88F8 /* PRinPagePerSheetSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB64968029C06A03006D88F8 /* PRinPagePerSheetSelectView.swift */; };
-		EB64977D29C343E8006D88F8 /* PRinPageRangeSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB64977C29C343E8006D88F8 /* PRinPageRangeSelectView.swift */; };
-		EBE535AA29C34C8F001184F3 /* PRinPageSizeSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBE535A929C34C8F001184F3 /* PRinPageSizeSelectView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		02A2AADB9475C6C7CC373CEA /* Pods-PRinPrinterScan.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PRinPrinterScan.debug.xcconfig"; path = "Target Support Files/Pods-PRinPrinterScan/Pods-PRinPrinterScan.debug.xcconfig"; sourceTree = "<group>"; };
 		177FCA851F9A526872B9AD47 /* Pods_PRinPrinterScan.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PRinPrinterScan.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		45604F858115B8B99F88BC39 /* Pods-PRinPrinterScan.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PRinPrinterScan.release.xcconfig"; path = "Target Support Files/Pods-PRinPrinterScan/Pods-PRinPrinterScan.release.xcconfig"; sourceTree = "<group>"; };
+		D84CEBEC29C5AAF500E9841E /* PRPrinterManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRPrinterManager.swift; sourceTree = "<group>"; };
+		D84CEBEE29C6B82300E9841E /* PRPrinterClipboardVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRPrinterClipboardVC.swift; sourceTree = "<group>"; };
+		D84CEBF029C70A5A00E9841E /* PRPrinterWebPrinterVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRPrinterWebPrinterVC.swift; sourceTree = "<group>"; };
 		D85872B429BC173700557743 /* qing.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = qing.pdf; sourceTree = "<group>"; };
 		D8F43EA629BCAD60006932B0 /* 1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 1.png; sourceTree = "<group>"; };
 		D8F43EA829BCAD8A006932B0 /* 2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 2.png; sourceTree = "<group>"; };
 		D8F43EAA29BF5875006932B0 /* PRinHomeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRinHomeVC.swift; sourceTree = "<group>"; };
 		D8F43EAC29BF6C3C006932B0 /* PRPrinterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRPrinterViewController.swift; sourceTree = "<group>"; };
 		D8F43EAE29C0BEDC006932B0 /* PRinPdfPreviewCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRinPdfPreviewCollection.swift; sourceTree = "<group>"; };
+		D8F43EB029C4AA2F006932B0 /* PRPrinterPageRangeSelectVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRPrinterPageRangeSelectVC.swift; sourceTree = "<group>"; };
+		D8F43EB229C4AC35006932B0 /* PRPrinterPageSizeSelectVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRPrinterPageSizeSelectVC.swift; sourceTree = "<group>"; };
 		EB10183429BB191A00FC51C9 /* PRinPrinterScan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PRinPrinterScan.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB10183729BB191A00FC51C9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EB10183929BB191A00FC51C9 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -178,8 +186,6 @@
 		EB64967929C02A75006D88F8 /* SF-Pro-Text-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Text-Regular.otf"; sourceTree = "<group>"; };
 		EB64967A29C02A76006D88F8 /* SF-Pro-Text-Semibold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Text-Semibold.otf"; sourceTree = "<group>"; };
 		EB64968029C06A03006D88F8 /* PRinPagePerSheetSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRinPagePerSheetSelectView.swift; sourceTree = "<group>"; };
-		EB64977C29C343E8006D88F8 /* PRinPageRangeSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRinPageRangeSelectView.swift; sourceTree = "<group>"; };
-		EBE535A929C34C8F001184F3 /* PRinPageSizeSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRinPageSizeSelectView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -237,9 +243,14 @@
 				EB10183729BB191A00FC51C9 /* AppDelegate.swift */,
 				EB10183929BB191A00FC51C9 /* SceneDelegate.swift */,
 				EB10183B29BB191A00FC51C9 /* ViewController.swift */,
+				D84CEBEC29C5AAF500E9841E /* PRPrinterManager.swift */,
 				D8F43EAC29BF6C3C006932B0 /* PRPrinterViewController.swift */,
 				EB64966D29C00E6D006D88F8 /* PRSettingViewController.swift */,
 				EB64967429C027EA006D88F8 /* PRPrinterOptionsVC.swift */,
+				D8F43EB029C4AA2F006932B0 /* PRPrinterPageRangeSelectVC.swift */,
+				D8F43EB229C4AC35006932B0 /* PRPrinterPageSizeSelectVC.swift */,
+				D84CEBEE29C6B82300E9841E /* PRPrinterClipboardVC.swift */,
+				D84CEBF029C70A5A00E9841E /* PRPrinterWebPrinterVC.swift */,
 				D8F43EAA29BF5875006932B0 /* PRinHomeVC.swift */,
 				EB64967129C01B9E006D88F8 /* Views */,
 				D85872B429BC173700557743 /* qing.pdf */,
@@ -416,8 +427,6 @@
 				EB64967229C01C02006D88F8 /* PRinPrinterPinpaiSelectView.swift */,
 				EB64968029C06A03006D88F8 /* PRinPagePerSheetSelectView.swift */,
 				D8F43EAE29C0BEDC006932B0 /* PRinPdfPreviewCollection.swift */,
-				EB64977C29C343E8006D88F8 /* PRinPageRangeSelectView.swift */,
-				EBE535A929C34C8F001184F3 /* PRinPageSizeSelectView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -587,24 +596,26 @@
 				EB10183C29BB191A00FC51C9 /* ViewController.swift in Sources */,
 				EB1018BC29BB34D600FC51C9 /* UIImage+SFSymbol.swift in Sources */,
 				EB1018CA29BB34D600FC51C9 /* CaptureSession+Orientation.swift in Sources */,
+				D84CEBF129C70A5A00E9841E /* PRPrinterWebPrinterVC.swift in Sources */,
 				EB1018BD29BB34D600FC51C9 /* EditImageViewController.swift in Sources */,
 				EB1018B829BB34D600FC51C9 /* CGRect+Utils.swift in Sources */,
 				EB1018B129BB34D600FC51C9 /* ScannerViewController.swift in Sources */,
+				D84CEBEF29C6B82300E9841E /* PRPrinterClipboardVC.swift in Sources */,
 				EB1018AF29BB34D600FC51C9 /* CameraScannerViewController.swift in Sources */,
 				D8F43EAD29BF6C3C006932B0 /* PRPrinterViewController.swift in Sources */,
 				EB64967529C027EA006D88F8 /* PRPrinterOptionsVC.swift in Sources */,
+				D8F43EB129C4AA2F006932B0 /* PRPrinterPageRangeSelectVC.swift in Sources */,
 				EB1018D029BB36FC00FC51C9 /* PRinScanCameraVC.swift in Sources */,
 				D8F43EAF29C0BEDC006932B0 /* PRinPdfPreviewCollection.swift in Sources */,
 				EB1018B529BB34D600FC51C9 /* CGImagePropertyOrientation.swift in Sources */,
+				D8F43EB329C4AC35006932B0 /* PRPrinterPageSizeSelectVC.swift in Sources */,
 				EB1018BE29BB34D600FC51C9 /* ZoomGestureController.swift in Sources */,
-				EBE535AA29C34C8F001184F3 /* PRinPageSizeSelectView.swift in Sources */,
 				EB64967029C010A1006D88F8 /* PRPurchaseSubManager.swift in Sources */,
 				EB10183829BB191A00FC51C9 /* AppDelegate.swift in Sources */,
 				EB1018B229BB34D600FC51C9 /* AVCaptureVideoOrientation+Utils.swift in Sources */,
 				EB1018C429BB34D600FC51C9 /* QuadrilateralView.swift in Sources */,
 				D8F43EAB29BF5875006932B0 /* PRinHomeVC.swift in Sources */,
 				EB1018C129BB34D600FC51C9 /* Error.swift in Sources */,
-				EB64977D29C343E8006D88F8 /* PRinPageRangeSelectView.swift in Sources */,
 				EB64968129C06A03006D88F8 /* PRinPagePerSheetSelectView.swift in Sources */,
 				EB1018C929BB34D600FC51C9 /* CaptureSession+Flash.swift in Sources */,
 				EB1018C729BB34D600FC51C9 /* CaptureDevice.swift in Sources */,
@@ -624,6 +635,7 @@
 				EB1018AD29BB34D600FC51C9 /* CaptureSessionManager.swift in Sources */,
 				EB1018BA29BB34D600FC51C9 /* UIImage+Orientation.swift in Sources */,
 				EB1018CC29BB34D600FC51C9 /* CaptureSession+Focus.swift in Sources */,
+				D84CEBED29C5AAF500E9841E /* PRPrinterManager.swift in Sources */,
 				EB64966E29C00E6D006D88F8 /* PRSettingViewController.swift in Sources */,
 				EB1018CB29BB34D600FC51C9 /* CaptureSession.swift in Sources */,
 			);

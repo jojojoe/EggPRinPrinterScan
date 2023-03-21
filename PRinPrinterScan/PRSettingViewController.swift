@@ -51,7 +51,7 @@ class PRSettingViewController: UIViewController {
         collection.addSubview(subscribeBanner)
         subscribeBanner.snp.makeConstraints {
             $0.left.equalToSuperview().offset(24)
-            $0.right.equalToSuperview().offset(-24)
+            $0.width.equalTo((UIScreen.main.bounds.width - 24 * 2))
             $0.top.equalToSuperview().offset(30)
             $0.height.equalTo(192.0/686.0 * (UIScreen.main.bounds.width - 24 * 2))
         }

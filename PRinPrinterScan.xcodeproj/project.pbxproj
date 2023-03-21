@@ -11,7 +11,6 @@
 		D84CEBED29C5AAF500E9841E /* PRPrinterManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D84CEBEC29C5AAF500E9841E /* PRPrinterManager.swift */; };
 		D84CEBEF29C6B82300E9841E /* PRPrinterClipboardVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D84CEBEE29C6B82300E9841E /* PRPrinterClipboardVC.swift */; };
 		D84CEBF129C70A5A00E9841E /* PRPrinterWebPrinterVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D84CEBF029C70A5A00E9841E /* PRPrinterWebPrinterVC.swift */; };
-		D85872B529BC173700557743 /* qing.pdf in Resources */ = {isa = PBXBuildFile; fileRef = D85872B429BC173700557743 /* qing.pdf */; };
 		D8F43EA729BCAD60006932B0 /* 1.png in Resources */ = {isa = PBXBuildFile; fileRef = D8F43EA629BCAD60006932B0 /* 1.png */; };
 		D8F43EA929BCAD8B006932B0 /* 2.png in Resources */ = {isa = PBXBuildFile; fileRef = D8F43EA829BCAD8A006932B0 /* 2.png */; };
 		D8F43EAB29BF5875006932B0 /* PRinHomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F43EAA29BF5875006932B0 /* PRinHomeVC.swift */; };
@@ -73,7 +72,6 @@
 		EB1018CA29BB34D600FC51C9 /* CaptureSession+Orientation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB10189A29BB34D600FC51C9 /* CaptureSession+Orientation.swift */; };
 		EB1018CB29BB34D600FC51C9 /* CaptureSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB10189B29BB34D600FC51C9 /* CaptureSession.swift */; };
 		EB1018CC29BB34D600FC51C9 /* CaptureSession+Focus.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB10189C29BB34D600FC51C9 /* CaptureSession+Focus.swift */; };
-		EB1018D029BB36FC00FC51C9 /* PRinScanCameraVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB1018CF29BB36FC00FC51C9 /* PRinScanCameraVC.swift */; };
 		EB64966E29C00E6D006D88F8 /* PRSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB64966D29C00E6D006D88F8 /* PRSettingViewController.swift */; };
 		EB64967029C010A1006D88F8 /* PRPurchaseSubManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB64966F29C010A1006D88F8 /* PRPurchaseSubManager.swift */; };
 		EB64967329C01C02006D88F8 /* PRinPrinterPinpaiSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB64967229C01C02006D88F8 /* PRinPrinterPinpaiSelectView.swift */; };
@@ -93,7 +91,6 @@
 		D84CEBEC29C5AAF500E9841E /* PRPrinterManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRPrinterManager.swift; sourceTree = "<group>"; };
 		D84CEBEE29C6B82300E9841E /* PRPrinterClipboardVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRPrinterClipboardVC.swift; sourceTree = "<group>"; };
 		D84CEBF029C70A5A00E9841E /* PRPrinterWebPrinterVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRPrinterWebPrinterVC.swift; sourceTree = "<group>"; };
-		D85872B429BC173700557743 /* qing.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = qing.pdf; sourceTree = "<group>"; };
 		D8F43EA629BCAD60006932B0 /* 1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 1.png; sourceTree = "<group>"; };
 		D8F43EA829BCAD8A006932B0 /* 2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 2.png; sourceTree = "<group>"; };
 		D8F43EAA29BF5875006932B0 /* PRinHomeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRinHomeVC.swift; sourceTree = "<group>"; };
@@ -175,7 +172,6 @@
 		EB10189A29BB34D600FC51C9 /* CaptureSession+Orientation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CaptureSession+Orientation.swift"; sourceTree = "<group>"; };
 		EB10189B29BB34D600FC51C9 /* CaptureSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CaptureSession.swift; sourceTree = "<group>"; };
 		EB10189C29BB34D600FC51C9 /* CaptureSession+Focus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CaptureSession+Focus.swift"; sourceTree = "<group>"; };
-		EB1018CF29BB36FC00FC51C9 /* PRinScanCameraVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRinScanCameraVC.swift; sourceTree = "<group>"; };
 		EB64966D29C00E6D006D88F8 /* PRSettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRSettingViewController.swift; sourceTree = "<group>"; };
 		EB64966F29C010A1006D88F8 /* PRPurchaseSubManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRPurchaseSubManager.swift; sourceTree = "<group>"; };
 		EB64967229C01C02006D88F8 /* PRinPrinterPinpaiSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRinPrinterPinpaiSelectView.swift; sourceTree = "<group>"; };
@@ -253,8 +249,6 @@
 				D84CEBF029C70A5A00E9841E /* PRPrinterWebPrinterVC.swift */,
 				D8F43EAA29BF5875006932B0 /* PRinHomeVC.swift */,
 				EB64967129C01B9E006D88F8 /* Views */,
-				D85872B429BC173700557743 /* qing.pdf */,
-				EB1018CE29BB36E300FC51C9 /* ScanEdit */,
 				EB10183D29BB191A00FC51C9 /* Main.storyboard */,
 				EB10184029BB191D00FC51C9 /* Assets.xcassets */,
 				EB10184229BB191D00FC51C9 /* LaunchScreen.storyboard */,
@@ -413,14 +407,6 @@
 			path = Extension;
 			sourceTree = "<group>";
 		};
-		EB1018CE29BB36E300FC51C9 /* ScanEdit */ = {
-			isa = PBXGroup;
-			children = (
-				EB1018CF29BB36FC00FC51C9 /* PRinScanCameraVC.swift */,
-			);
-			path = ScanEdit;
-			sourceTree = "<group>";
-		};
 		EB64967129C01B9E006D88F8 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -526,7 +512,6 @@
 				EB64967D29C02A76006D88F8 /* SF-Pro-Text-Black.otf in Resources */,
 				EB1018A929BB34D600FC51C9 /* enhance@3x.png in Resources */,
 				EB1018A229BB34D600FC51C9 /* rotate.png in Resources */,
-				D85872B529BC173700557743 /* qing.pdf in Resources */,
 				EB10189D29BB34D600FC51C9 /* Localizable.strings in Resources */,
 				EB1018A829BB34D600FC51C9 /* flash@3x.png in Resources */,
 				EB64967C29C02A76006D88F8 /* SF-Pro-Text-Medium.otf in Resources */,
@@ -605,7 +590,6 @@
 				D8F43EAD29BF6C3C006932B0 /* PRPrinterViewController.swift in Sources */,
 				EB64967529C027EA006D88F8 /* PRPrinterOptionsVC.swift in Sources */,
 				D8F43EB129C4AA2F006932B0 /* PRPrinterPageRangeSelectVC.swift in Sources */,
-				EB1018D029BB36FC00FC51C9 /* PRinScanCameraVC.swift in Sources */,
 				D8F43EAF29C0BEDC006932B0 /* PRinPdfPreviewCollection.swift in Sources */,
 				EB1018B529BB34D600FC51C9 /* CGImagePropertyOrientation.swift in Sources */,
 				D8F43EB329C4AC35006932B0 /* PRPrinterPageSizeSelectVC.swift in Sources */,
@@ -819,7 +803,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 53ADUL6525;
+				DEVELOPMENT_TEAM = 97Y24FFSPP;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PRinPrinterScan/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Used to scan images.";
@@ -835,7 +819,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.superegg.okeydokey;
+				PRODUCT_BUNDLE_IDENTIFIER = com.xx.888888;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -854,7 +838,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 53ADUL6525;
+				DEVELOPMENT_TEAM = 97Y24FFSPP;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PRinPrinterScan/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Used to scan images.";
@@ -870,7 +854,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.superegg.okeydokey;
+				PRODUCT_BUNDLE_IDENTIFIER = com.xx.888888;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;

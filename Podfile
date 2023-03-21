@@ -16,6 +16,7 @@ target 'PRinPrinterScan' do
   pod 'KRProgressHUD'
   pod 'DeviceKit'
   pod 'PickerView'
+  pod 'EllipsePageControl'
   
   pod 'LookinServer', :configurations => ['Debug']
   

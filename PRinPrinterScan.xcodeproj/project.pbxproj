@@ -74,6 +74,7 @@
 		EB1018CA29BB34D600FC51C9 /* CaptureSession+Orientation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB10189A29BB34D600FC51C9 /* CaptureSession+Orientation.swift */; };
 		EB1018CB29BB34D600FC51C9 /* CaptureSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB10189B29BB34D600FC51C9 /* CaptureSession.swift */; };
 		EB1018CC29BB34D600FC51C9 /* CaptureSession+Focus.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB10189C29BB34D600FC51C9 /* CaptureSession+Focus.swift */; };
+		EB20C15929CAEF88007FF903 /* PRPrinterStoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB20C15829CAEF88007FF903 /* PRPrinterStoreManager.swift */; };
 		EB64966E29C00E6D006D88F8 /* PRSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB64966D29C00E6D006D88F8 /* PRSettingViewController.swift */; };
 		EB64967029C010A1006D88F8 /* PRPurchaseSubManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB64966F29C010A1006D88F8 /* PRPurchaseSubManager.swift */; };
 		EB64967329C01C02006D88F8 /* PRinPrinterPinpaiSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB64967229C01C02006D88F8 /* PRinPrinterPinpaiSelectView.swift */; };
@@ -176,6 +177,7 @@
 		EB10189A29BB34D600FC51C9 /* CaptureSession+Orientation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CaptureSession+Orientation.swift"; sourceTree = "<group>"; };
 		EB10189B29BB34D600FC51C9 /* CaptureSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CaptureSession.swift; sourceTree = "<group>"; };
 		EB10189C29BB34D600FC51C9 /* CaptureSession+Focus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CaptureSession+Focus.swift"; sourceTree = "<group>"; };
+		EB20C15829CAEF88007FF903 /* PRPrinterStoreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRPrinterStoreManager.swift; sourceTree = "<group>"; };
 		EB64966D29C00E6D006D88F8 /* PRSettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRSettingViewController.swift; sourceTree = "<group>"; };
 		EB64966F29C010A1006D88F8 /* PRPurchaseSubManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRPurchaseSubManager.swift; sourceTree = "<group>"; };
 		EB64967229C01C02006D88F8 /* PRinPrinterPinpaiSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRinPrinterPinpaiSelectView.swift; sourceTree = "<group>"; };
@@ -244,6 +246,7 @@
 				EB10183929BB191A00FC51C9 /* SceneDelegate.swift */,
 				EB10183B29BB191A00FC51C9 /* ViewController.swift */,
 				D84CEBEC29C5AAF500E9841E /* PRPrinterManager.swift */,
+				EB20C15829CAEF88007FF903 /* PRPrinterStoreManager.swift */,
 				D8F43EAC29BF6C3C006932B0 /* PRPrinterViewController.swift */,
 				EB64966D29C00E6D006D88F8 /* PRSettingViewController.swift */,
 				EB64967429C027EA006D88F8 /* PRPrinterOptionsVC.swift */,
@@ -594,6 +597,7 @@
 				D84CEBEF29C6B82300E9841E /* PRPrinterClipboardVC.swift in Sources */,
 				EB1018AF29BB34D600FC51C9 /* CameraScannerViewController.swift in Sources */,
 				D8F43EAD29BF6C3C006932B0 /* PRPrinterViewController.swift in Sources */,
+				EB20C15929CAEF88007FF903 /* PRPrinterStoreManager.swift in Sources */,
 				EB64967529C027EA006D88F8 /* PRPrinterOptionsVC.swift in Sources */,
 				D8F43EB129C4AA2F006932B0 /* PRPrinterPageRangeSelectVC.swift in Sources */,
 				D8F43EAF29C0BEDC006932B0 /* PRinPdfPreviewCollection.swift in Sources */,
@@ -811,42 +815,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 53ADUL6525;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = PRinPrinterScan/Info.plist;
-				INFOPLIST_KEY_NSCameraUsageDescription = "Used to scan images.";
-				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "App needs your photo gallery permission to choose photo, and apply the shape editor, video cut, sticker, text and other effect.";
-				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Used to select images from your Photo Library.";
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.superegg.okeydokey;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		EB10184A29BB191D00FC51C9 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 45604F858115B8B99F88BC39 /* Pods-PRinPrinterScan.release.xcconfig */;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 53ADUL6525;
+				DEVELOPMENT_TEAM = 97Y24FFSPP;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PRinPrinterScan/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Used to scan images.";
@@ -864,6 +833,42 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.xx.888888;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		EB10184A29BB191D00FC51C9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 45604F858115B8B99F88BC39 /* Pods-PRinPrinterScan.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PRinPrinterScan/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Used to scan images.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "App needs your photo gallery permission to choose photo, and apply the shape editor, video cut, sticker, text and other effect.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Used to select images from your Photo Library.";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.xx.888888;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;

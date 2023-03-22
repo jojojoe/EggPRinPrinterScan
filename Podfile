@@ -13,6 +13,7 @@ target 'PRinPrinterScan' do
   pod 'SnapKit'
   pod 'SwifterSwift'
   pod 'SwiftyStoreKit'
+  pod 'TPInAppReceipt'
   pod 'KRProgressHUD'
   pod 'DeviceKit'
   pod 'PickerView'

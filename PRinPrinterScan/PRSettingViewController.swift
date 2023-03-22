@@ -11,7 +11,7 @@ class PRSettingViewController: UIViewController {
     
     var mainVC: ViewController!
     
-    let subscribeBanner = UIView()
+    let subscribeBanner = UIButton()
     var collection: UICollectionView!
     
     let itemList: [[String : String]] = [
@@ -55,6 +55,14 @@ class PRSettingViewController: UIViewController {
             $0.top.equalToSuperview().offset(30)
             $0.height.equalTo(192.0/686.0 * (UIScreen.main.bounds.width - 24 * 2))
         }
+        subscribeBanner.layer.shadowOffset = CGSize(width: 0, height: 4)
+        subscribeBanner.layer.shadowColor = UIColor(hexString: "#FE9F4B")!.cgColor
+        subscribeBanner.layer.shadowOpacity = 0.15
+        subscribeBanner.layer.shadowRadius = 8
+        subscribeBanner.addTarget(self, action: #selector(subscribeBannerClick(sender: )), for: .touchUpInside)
+        
+        //
+        
         //
         let subBannerImagV = UIImageView()
         subBannerImagV.image = UIImage(named: "Group 129")
@@ -63,41 +71,45 @@ class PRSettingViewController: UIViewController {
             $0.left.right.top.bottom.equalToSuperview()
         }
         //
-//        let subNameL = UILabel()
-//        subscribeBanner.addSubview(subNameL)
-//        subNameL.text = "PRINT PREMIUM"
-//        subNameL.font = UIFont(name: "", size: 24)
-//        subNameL.textColor = UIColor(hexString: "#A63A21")
-//        subNameL.snp.makeConstraints {
-//            $0.bottom.equalTo(subBanner.snp.centerY)
-//            $0.left.equalTo(iconImgV.snp.right).offset(20)
-//            $0.width.height.greaterThanOrEqualTo(10)
-//        }
-//
-//        let infoNameL = UILabel()
-//        subscribeBanner.addSubview(infoNameL)
-//        infoNameL.text = "Unlock All Features"
-//        infoNameL.font = UIFont(name: "", size: 12)
-//        infoNameL.textColor = UIColor(hexString: "#A63A21")
-//        infoNameL.snp.makeConstraints {
-//            $0.top.equalTo(subBanner.snp.centerY).offset(4)
-//            $0.left.equalTo(iconImgV.snp.right).offset(20)
-//            $0.width.height.greaterThanOrEqualTo(10)
-//        }
+        let subNameL = UILabel()
+        subscribeBanner.addSubview(subNameL)
+        subNameL.text = "PRINT PREMIUM"
+        subNameL.font = UIFont(name: "SFProText-Bold", size: 18)
+        subNameL.textColor = UIColor(hexString: "#A63A21")
+        subNameL.snp.makeConstraints {
+            $0.bottom.equalTo(subscribeBanner.snp.centerY)
+            $0.left.equalToSuperview().offset(20)
+            $0.width.height.greaterThanOrEqualTo(10)
+        }
+
+        let infoNameL = UILabel()
+        subscribeBanner.addSubview(infoNameL)
+        infoNameL.text = "Unlock All Features"
+        infoNameL.font = UIFont(name: "SFProText-Semibold", size: 12)
+        infoNameL.textColor = UIColor(hexString: "#A63A21")
+        infoNameL.snp.makeConstraints {
+            $0.top.equalTo(subscribeBanner.snp.centerY).offset(4)
+            $0.left.equalToSuperview().offset(20)
+            $0.width.height.greaterThanOrEqualTo(10)
+        }
         
         if PRPurchaseSubManager.default.isInSubscribe {
             subscribeBanner.isHidden = true
         } else {
             subscribeBanner.isHidden = false
         }
-            
-            
+        
+        
     }
     
     
     
-    
-    
+    @objc func subscribeBannerClick(sender: UIButton) {
+        let subsVC = PRPrinterStoreVC()
+        subsVC.modalPresentationStyle = .fullScreen
+        self.present(subsVC, animated: true)
+    }
+     
 
 }
 
@@ -159,13 +171,13 @@ extension PRSettingViewController: UICollectionViewDelegate {
         let item = itemList[indexPath.item]
         let idstr = item["id"]
         if idstr == "0" {
-            
+            // restore
         } else if idstr == "1" {
-            
+            // share
         } else if idstr == "2" {
-            
+            // terms
         } else if idstr == "3" {
-            
+            // privacy
         }
         
         

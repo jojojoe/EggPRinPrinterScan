@@ -10,20 +10,49 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-
+    let VC = ViewController()
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
-        // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
-        // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
+        
         guard let _ = (scene as? UIWindowScene) else { return }
         
-        let splashVC = PRPrinterSplashVC()
-        let nav = UINavigationController.init(rootViewController: splashVC)
+        let currentVersion: String = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
+        var shouldShowSpl = true
+        if let saveVersion = UserDefaults.standard.string(forKey: "saveVersion") {
+            if saveVersion == currentVersion {
+                shouldShowSpl = false
+            } else {
+                UserDefaults.standard.set(currentVersion, forKey: "saveVersion")
+            }
+        } else {
+            UserDefaults.standard.set(currentVersion, forKey: "saveVersion")
+        }
+        if shouldShowSpl {
+            let splashVC = PRPrinterSplashVC()
+            let nav = UINavigationController.init(rootViewController: splashVC)
+            nav.isNavigationBarHidden = true
+            window?.rootViewController = nav
+            window?.makeKeyAndVisible()
+            splashVC.continueBlock = {
+                [weak self] in
+                guard let `self` = self else {return}
+                DispatchQueue.main.async {
+                    self.setupViewController()
+                }
+            }
+        } else {
+            setupViewController()
+            
+        }
+        
+        
+    }
+    
+    func setupViewController() {
+        let nav = UINavigationController.init(rootViewController: VC)
         nav.isNavigationBarHidden = true
         window?.rootViewController = nav
         window?.makeKeyAndVisible()
-        
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

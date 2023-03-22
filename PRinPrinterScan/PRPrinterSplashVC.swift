@@ -17,7 +17,7 @@ class PRPrinterSplashVC: UIViewController {
     let pagecontrol = EllipsePageControl()
     var infoList: [[String: String]] = []
     var currentInfoIndex: Int = 0
-    
+    var continueBlock:(()->Void)?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -63,7 +63,7 @@ class PRPrinterSplashVC: UIViewController {
         view.addSubview(theContinueBtn)
         theContinueBtn.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-50)
+            $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-60)
             $0.left.equalToSuperview().offset(24)
             $0.height.equalTo(48)
         }
@@ -116,8 +116,6 @@ class PRPrinterSplashVC: UIViewController {
         
         pageControlBgV.addSubview(pagecontrol)
         
-        //
-        
     }
 
 }
@@ -125,10 +123,12 @@ class PRPrinterSplashVC: UIViewController {
 extension PRPrinterSplashVC {
     @objc func theContinueBtnClick(sender: UIButton) {
         if currentInfoIndex == infoList.count - 1 {
+            // open
             
+            continueBlock?()
         } else {
             currentInfoIndex += 1
-            pagecontrol.currentPage = currentInfoIndex
+//            pagecontrol.currentPage = currentInfoIndex
 //            infoLabel.text = infoList[currentInfoIndex]["name"]
             collection.scrollToItem(at: IndexPath(item: currentInfoIndex, section: 0), at: .centeredHorizontally, animated: true)
         }

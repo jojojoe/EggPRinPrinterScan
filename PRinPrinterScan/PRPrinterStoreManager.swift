@@ -50,10 +50,11 @@ class PRPrinterStoreManager {
         case notPurchased
     }
     
+    
     var iapTypeList: [IAPType] = [.month, .year]
     var currentIapType: IAPType = .year
     var inSubscription: Bool = false
-    var currentProduct: [PRPrinterStoreManager.IAPProduct] = []
+    var currentProducts: [PRPrinterStoreManager.IAPProduct] = []
     
 }
 
@@ -63,7 +64,7 @@ extension PRPrinterStoreManager {
         let iapList = iapTypeList.map { $0.rawValue }
         retrieveProductsInfo(iapList: iapList) {[weak self] items in
             guard let `self` = self else { return }
-            self.currentProduct = items
+            self.currentProducts = items
             block(items)
         }
     }

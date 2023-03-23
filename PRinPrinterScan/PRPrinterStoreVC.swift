@@ -11,8 +11,8 @@ import SnapKit
 class PRPrinterStoreVC: UIViewController {
 
     let monthBeforePrice: Double = 9.99
-    let defaultMonthPrice: Double = 6.99
-    let defaultYearPrice: Double = 24.99
+    var defaultMonthPrice: Double = 6.99
+    var defaultYearPrice: Double = 24.99
     var currentSymbol: String = "$"
     
     
@@ -40,7 +40,11 @@ class PRPrinterStoreVC: UIViewController {
         setupYearPurchaseBtn()
         setupMonthPurchaseBtn()
         setupDescribeLabels()
+        fetchPriceLabels()
+        updateIapBtnStatus()
     }
+    
+    
     
     func setupContinueBtn() {
         view.addSubview(theContinueBtn)
@@ -111,7 +115,7 @@ class PRPrinterStoreVC: UIViewController {
         }
         //
         
-        monthPriceInfoLabel.text = "\(currentSymbol)\(defaultMonthPrice)/month"
+        monthPriceInfoLabel.text = "\(currentSymbol)\(defaultMonthPrice)/mo"
         monthPriceInfoLabel.textColor = .black
         monthPriceInfoLabel.font = UIFont(name: "SFProText-Bold", size: 14)
         monthBgBtn.addSubview(monthPriceInfoLabel)
@@ -123,16 +127,17 @@ class PRPrinterStoreVC: UIViewController {
 
         //
         let monthBeforePriceLabel = UILabel()
-        monthBeforePriceLabel.text = "\(currentSymbol)\(monthBeforePrice)/month"
+        let monthBeforeStr = "\(currentSymbol)\(monthBeforePrice)"
         monthBeforePriceLabel.textColor = UIColor(hexString: "#999999")
-        monthBeforePriceLabel.font = UIFont(name: "SFProText-Medium", size: 14)
+        monthBeforePriceLabel.font = UIFont(name: "SFProText-Regular", size: 14)
         monthBgBtn.addSubview(monthBeforePriceLabel)
         monthBeforePriceLabel.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.right.equalTo(monthPriceInfoLabel.snp.left).offset(-12)
             $0.width.height.greaterThanOrEqualTo(1)
         }
-
+        
+        monthBeforePriceLabel.attributedText = NSAttributedString(string: monthBeforeStr, attributes: [NSAttributedString.Key.font : (UIFont(name: "SFProText-Regular", size: 14) ?? UIFont.systemFont(ofSize: 14)), NSAttributedString.Key.foregroundColor : (UIColor(hexString: "#999999") ?? UIColor.white), NSAttributedString.Key.strikethroughStyle : 1, NSAttributedString.Key.strikethroughColor : (UIColor(hexString: "#999999") ?? UIColor.white)])
         
     }
     
@@ -174,7 +179,7 @@ class PRPrinterStoreVC: UIViewController {
         }
         //
         
-        yearPriceInfoLabel.text = "\(currentSymbol)\(Double(defaultYearPrice/12).accuracyToString(position: 2))/month"
+        yearPriceInfoLabel.text = "\(currentSymbol)\(Double(defaultYearPrice/12).accuracyToString(position: 2))/mo"
         yearPriceInfoLabel.textColor = .black
         yearPriceInfoLabel.font = UIFont(name: "SFProText-Bold", size: 14)
         yearBgBtn.addSubview(yearPriceInfoLabel)
@@ -204,6 +209,7 @@ class PRPrinterStoreVC: UIViewController {
         descTitleLabel.textAlignment = .center
         descTitleLabel.textColor = .black
         descTitleLabel.text = "Unlimited Access to\nAll Features"
+        descTitleLabel.adjustsFontSizeToFitWidth = true
         descTitleLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.top.equalToSuperview()
@@ -215,8 +221,8 @@ class PRPrinterStoreVC: UIViewController {
         describeBgV.addSubview(descLabel1)
         descLabel1.contentL.text = "All printing features"
         descLabel1.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
-            $0.width.equalTo(190)
+            $0.left.equalTo(descTitleLabel.snp.left)
+            $0.right.equalToSuperview().offset(-30)
             $0.top.equalTo(descTitleLabel.snp.bottom).offset(20)
             $0.height.equalTo(20)
         }
@@ -225,8 +231,8 @@ class PRPrinterStoreVC: UIViewController {
         describeBgV.addSubview(descLabel2)
         descLabel2.contentL.text = "Unlimited Scan & Fax"
         descLabel2.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
-            $0.width.equalTo(190)
+            $0.left.equalTo(descTitleLabel.snp.left)
+            $0.right.equalToSuperview().offset(-30)
             $0.top.equalTo(descLabel1.snp.bottom).offset(10)
             $0.height.equalTo(20)
         }
@@ -235,8 +241,8 @@ class PRPrinterStoreVC: UIViewController {
         describeBgV.addSubview(descLabel3)
         descLabel3.contentL.text = "Support all printer brands"
         descLabel3.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
-            $0.width.equalTo(190)
+            $0.left.equalTo(descTitleLabel.snp.left)
+            $0.right.equalToSuperview().offset(-30)
             $0.top.equalTo(descLabel2.snp.bottom).offset(10)
             $0.height.equalTo(20)
         }
@@ -248,7 +254,7 @@ class PRPrinterStoreVC: UIViewController {
         topIconImgV.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.top.equalToSuperview()
-            $0.bottom.equalTo(describeBgV).offset(-10)
+            $0.bottom.equalTo(describeBgV.snp.top).offset(0)
             $0.left.equalToSuperview()
         }
         topIconImgV.contentMode = .scaleAspectFit
@@ -267,11 +273,13 @@ class PRPrinterStoreVC: UIViewController {
     }
     
     @objc func monthBgBtnClick(sender: UIButton) {
-        
+        PRPrinterStoreManager.default.currentIapType = .month
+        updateIapBtnStatus()
     }
     
     @objc func yearBgBtnClick(sender: UIButton) {
-        
+        PRPrinterStoreManager.default.currentIapType = .year
+        updateIapBtnStatus()
     }
     
     @objc func theContinueBtnClick(sender: UIButton) {
@@ -304,6 +312,54 @@ class PRPrinterStoreVC: UIViewController {
 
     """
 
+}
+
+extension PRPrinterStoreVC {
+    
+    func updatePrice(products: [PRPrinterStoreManager.IAPProduct]) {
+        let product0 = products[0]
+        let product1 = products[1]
+        currentSymbol = product0.priceLocale.currencySymbol ?? "$"
+        
+        if product0.iapID == PRPrinterStoreManager.IAPType.month.rawValue {
+            defaultMonthPrice = product0.price
+            defaultYearPrice = product1.price
+        } else {
+            defaultYearPrice = product0.price
+            defaultMonthPrice = product1.price
+        }
+        monthPriceLabel.text = "\(currentSymbol)\(defaultMonthPrice)/month"
+        monthPriceInfoLabel.text = "\(currentSymbol)\(defaultMonthPrice)/mo"
+        yearPriceLabel.text = "\(currentSymbol)\(defaultYearPrice)/year"
+        yearPriceInfoLabel.text = "\(currentSymbol)\(Double(defaultYearPrice/12).accuracyToString(position: 2))/mo"
+    }
+    
+    func fetchPriceLabels() {
+        
+        
+        if PRPrinterStoreManager.default.currentProducts.count == 2 {
+            updatePrice(products: PRPrinterStoreManager.default.currentProducts)
+        } else {
+            PRPrinterStoreManager.default.fetchPurchaseInfo {[weak self] productList in
+                guard let `self` = self else {return}
+                DispatchQueue.main.async {
+                    [weak self] in
+                    guard let `self` = self else {return}
+                    self.updatePrice(products: productList)
+                }
+            }
+        }
+    }
+    
+    func updateIapBtnStatus() {
+        if PRPrinterStoreManager.default.currentIapType == .year {
+            yearBgBtn.layer.borderColor = UIColor(hexString: "#4285F4")!.cgColor
+            monthBgBtn.layer.borderColor = UIColor(hexString: "#F5F5F5")!.cgColor
+        } else if PRPrinterStoreManager.default.currentIapType == .month {
+            monthBgBtn.layer.borderColor = UIColor(hexString: "#4285F4")!.cgColor
+            yearBgBtn.layer.borderColor = UIColor(hexString: "#F5F5F5")!.cgColor
+        }
+    }
 }
 
 class PRStoreDesInfoLabel: UIView {

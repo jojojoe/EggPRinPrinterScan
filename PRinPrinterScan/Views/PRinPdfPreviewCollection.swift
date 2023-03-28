@@ -131,7 +131,7 @@ extension PRinPdfPreviewCollection: UICollectionViewDataSource {
                 if let thumbnail = thumbnailCache.object(forKey: key) {
                     imgV.image = thumbnail
                 } else {
-                    let size = cell.size
+                    let size = CGSize(width: cell.size.width * 2, height: cell.size.height * 2)
                     downloadQueue.async {
                         let thumbnail = page.thumbnail(of: size, for: .cropBox)
                         self.thumbnailCache.setObject(thumbnail, forKey: key)

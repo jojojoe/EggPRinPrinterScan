@@ -13,10 +13,25 @@ class PRPrinterViewController: UIViewController {
 
     var mainVC: ViewController!
     
+    
+    private let radarAnimation = "radarAnimation"
+    private var animationLayer: CALayer?
+    private var animationGroup: CAAnimationGroup?
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         setupContent()
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        animationLayer?.add(animationGroup!, forKey: radarAnimation)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        animationLayer?.removeAnimation(forKey: radarAnimation)
     }
     
     func setupContent() {
@@ -58,16 +73,16 @@ class PRPrinterViewController: UIViewController {
             $0.top.equalTo(topLabel1.snp.bottom).offset(24)
         }
         connectBgV.layer.shadowColor = UIColor.lightGray.cgColor
-        connectBgV.layer.shadowOffset = CGSize(width: 0, height: 2)
+        connectBgV.layer.shadowOffset = CGSize(width: 0, height: 4)
         connectBgV.layer.shadowRadius = 10
-        connectBgV.layer.shadowOpacity = 0.8
+        connectBgV.layer.shadowOpacity = 0.3
         
         //
         let connectLabel = UILabel()
         connectBgV.addSubview(connectLabel)
         connectLabel.text = "Connect Your Device"
         connectLabel.textColor = .black
-        connectLabel.font = UIFont(name: "SFProText-Semibold", size: 18)
+        connectLabel.font = UIFont(name: "SFProText-Bold", size: 18)
         connectLabel.snp.makeConstraints {
             $0.left.equalTo(24)
             $0.top.equalToSuperview().offset(26)
@@ -89,7 +104,18 @@ class PRPrinterViewController: UIViewController {
             $0.height.equalTo(32)
         }
         connectBtn.addTarget(self, action: #selector(connectBtnClick(sender: )), for: .touchUpInside)
-        
+        //
+        let leidaBgV = UIView()
+        connectBgV.addSubview(leidaBgV)
+        leidaBgV.backgroundColor = .clear
+        leidaBgV.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.right.equalToSuperview().offset(-40)
+            $0.width.height.equalTo(62)
+        }
+        let first = makeRadarAnimation(showRect: CGRect(x: -10, y: -10, width: 82, height: 82), isRound: true)
+        leidaBgV.layer.addSublayer(first)
+        //
         //
         let connectImgV = UIImageView()
         connectImgV.contentMode = .scaleAspectFit
@@ -158,6 +184,57 @@ class PRPrinterViewController: UIViewController {
             $0.height.equalTo(btnHeight)
         }
     }
+    
+    private func makeRadarAnimation(showRect: CGRect, isRound: Bool) -> CALayer {
+        // 1. 一个动态波
+        let shapeLayer = CAShapeLayer()
+        shapeLayer.frame = showRect
+        // showRect 最大内切圆
+        if isRound {
+            shapeLayer.path = UIBezierPath(ovalIn: CGRect(x: 0, y: 0, width: showRect.width, height: showRect.height)).cgPath
+        } else {
+            // 矩形
+            shapeLayer.path = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: showRect.width, height: showRect.height), cornerRadius: 10).cgPath
+        }
+        shapeLayer.fillColor = UIColor(hexString: "#9CCAFF")!.cgColor
+        // 默认初始颜色透明度
+        shapeLayer.opacity = 0.0
+        
+        animationLayer = shapeLayer
+        
+        // 2. 需要重复的动态波，即创建副本
+        let replicator = CAReplicatorLayer()
+        replicator.frame = shapeLayer.bounds
+        replicator.instanceCount = 4
+        replicator.instanceDelay = 0.5
+        replicator.addSublayer(shapeLayer)
+        
+        // 3. 创建动画组
+        let opacityAnimation = CABasicAnimation(keyPath: "opacity")
+        opacityAnimation.fromValue = NSNumber(floatLiteral: 1.0)  // 开始透明度
+        opacityAnimation.toValue = NSNumber(floatLiteral: 0)      // 结束时透明底
+        
+        let scaleAnimation = CABasicAnimation(keyPath: "transform")
+        if isRound {
+            scaleAnimation.fromValue = NSValue.init(caTransform3D: CATransform3DScale(CATransform3DIdentity, 0, 0, 0))      // 缩放起始大小
+        } else {
+            scaleAnimation.fromValue = NSValue.init(caTransform3D: CATransform3DScale(CATransform3DIdentity, 1.0, 1.0, 0))      // 缩放起始大小
+            
+        }
+        scaleAnimation.toValue = NSValue.init(caTransform3D: CATransform3DScale(CATransform3DIdentity, 1.5, 1.5, 0))      // 缩放结束大小
+        let animationGroup = CAAnimationGroup()
+        animationGroup.animations = [opacityAnimation, scaleAnimation]
+        animationGroup.duration = 2       // 动画执行时间
+        animationGroup.repeatCount = HUGE   // 最大重复
+        animationGroup.autoreverses = false
+        
+        self.animationGroup = animationGroup
+        
+//        shapeLayer.add(animationGroup, forKey: radarAnimation)
+        
+        return replicator
+    }
+    
     
     @objc func connectBtnClick(sender: UIButton) {
         showConnectPinPai()
@@ -245,9 +322,9 @@ class PRinMPrintBottomBtn: UIButton {
         self.layer.cornerRadius = 10
         
         self.layer.shadowColor = UIColor.lightGray.cgColor
-        self.layer.shadowOffset = CGSize(width: 0, height: 2)
+        self.layer.shadowOffset = CGSize(width: 0, height: 4)
         self.layer.shadowRadius = 10
-        self.layer.shadowOpacity = 0.8
+        self.layer.shadowOpacity = 0.3
 
         //
         

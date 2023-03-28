@@ -477,12 +477,14 @@ extension PRPrinterOptionsVC {
     
     @objc func printerBtnClick(sender: UIButton) {
         
-        if PRPrinterManager.default.currentSheetStr == "1" {
-            showSystemPrinter(urls: [contentUrl])
-        } else {
-            let resultUlrs = PRPrinterManager.default.processMakeNewPDFImagesUrls()
-            showSystemPrinter(urls: resultUlrs)
-        }
+//        if PRPrinterManager.default.currentSheetStr == "1" {
+//            showSystemPrinter(urls: [contentUrl])
+//        } else {
+//            let resultUlrs = PRPrinterManager.default.processMakeNewPDFImagesUrls()
+//            showSystemPrinter(urls: resultUlrs)
+//        }
+        let resultUlrs = PRPrinterManager.default.processMakeNewPDFImagesUrls()
+        showSystemPrinter(urls: resultUlrs)
     }
     
     

@@ -337,7 +337,7 @@ extension PRPrinterStoreVC {
     func fetchPriceLabels() {
         
         
-        if PRPrinterStoreManager.default.currentProducts.count == 2 {
+        if PRPrinterStoreManager.default.currentProducts.count == PRPrinterStoreManager.default.iapTypeList.count {
             updatePrice(products: PRPrinterStoreManager.default.currentProducts)
         } else {
             PRPrinterStoreManager.default.fetchPurchaseInfo {[weak self] productList in
@@ -345,7 +345,9 @@ extension PRPrinterStoreVC {
                 DispatchQueue.main.async {
                     [weak self] in
                     guard let `self` = self else {return}
-                    self.updatePrice(products: productList)
+                    if productList.count == PRPrinterStoreManager.default.iapTypeList.count {
+                        self.updatePrice(products: productList)
+                    }
                 }
             }
         }

@@ -23,7 +23,10 @@ class PRPrinterViewController: UIViewController {
         super.viewDidLoad()
 
         setupContent()
+        addNotification()
     }
+    
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         animationLayer?.add(animationGroup!, forKey: radarAnimation)
@@ -31,6 +34,19 @@ class PRPrinterViewController: UIViewController {
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+        animationLayer?.removeAnimation(forKey: radarAnimation)
+    }
+    
+    func addNotification() {
+        NotificationCenter.default.addObserver(self, selector: #selector(becomActiveaction(noti: )), name: UIApplication.didBecomeActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(enterBackgroundActiveaction(noti: )), name: UIApplication.didEnterBackgroundNotification, object: nil)
+    }
+    
+    @objc func becomActiveaction(noti: Notification) {
+        animationLayer?.add(animationGroup!, forKey: radarAnimation)
+    }
+    
+    @objc func enterBackgroundActiveaction(noti: Notification) {
         animationLayer?.removeAnimation(forKey: radarAnimation)
     }
     

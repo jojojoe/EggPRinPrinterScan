@@ -11,7 +11,7 @@ import WebKit
 import YPImagePicker
 import Photos
 
-class PRinHomeVC: UIViewController, ImageScannerControllerDelegate {
+class PRinHomeVC: UIViewController {
 
     
     override func viewDidLoad() {
@@ -95,10 +95,10 @@ class PRinHomeVC: UIViewController, ImageScannerControllerDelegate {
 
 
     @objc func scanBtnClick(sender: UIButton) {
-        let scannerViewController = ImageScannerController()
-        scannerViewController.imageScannerDelegate = self
-        scannerViewController.modalPresentationStyle = .fullScreen
-        present(scannerViewController, animated: true)
+//        let scannerViewController = ImageScannerController()
+//        scannerViewController.imageScannerDelegate = self
+//        scannerViewController.modalPresentationStyle = .fullScreen
+//        present(scannerViewController, animated: true)
     }
     
     @objc func connectBtnClick(sender: UIButton) {
@@ -430,29 +430,29 @@ extension PRinHomeVC {
 }
 
 
-extension PRinHomeVC {
-    func imageScannerController(_ scanner: ImageScannerController, didFailWithError error: Error) {
-        // You are responsible for carefully handling the error
-        print(error)
-    }
-
-    func imageScannerController(_ scanner: ImageScannerController, didFinishScanningWithResults results: ImageScannerResults) {
-        // The user successfully scanned an image, which is available in the ImageScannerResults
-        // You are responsible for dismissing the ImageScannerController
-        scanner.dismiss(animated: true)
-        
-        let resultImg = results.croppedScan.image
-        
-        
-    }
-
-    func imageScannerControllerDidCancel(_ scanner: ImageScannerController) {
-        // The user tapped 'Cancel' on the scanner
-        // You are responsible for dismissing the ImageScannerController
-        scanner.dismiss(animated: true)
-    }
-
-}
+//extension PRinHomeVC {
+//    func imageScannerController(_ scanner: ImageScannerController, didFailWithError error: Error) {
+//        // You are responsible for carefully handling the error
+//        print(error)
+//    }
+//
+//    func imageScannerController(_ scanner: ImageScannerController, didFinishScanningWithResults results: ImageScannerResults) {
+//        // The user successfully scanned an image, which is available in the ImageScannerResults
+//        // You are responsible for dismissing the ImageScannerController
+//        scanner.dismiss(animated: true)
+//
+//        let resultImg = results.croppedScan.image
+//
+//
+//    }
+//
+//    func imageScannerControllerDidCancel(_ scanner: ImageScannerController) {
+//        // The user tapped 'Cancel' on the scanner
+//        // You are responsible for dismissing the ImageScannerController
+//        scanner.dismiss(animated: true)
+//    }
+//
+//}
 
 //MARK: 打印照片
 extension PRinHomeVC: UIImagePickerControllerDelegate {

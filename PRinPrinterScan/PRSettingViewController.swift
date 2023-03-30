@@ -6,8 +6,18 @@
 //
 
 import UIKit
+import MessageUI
+import DeviceKit
+import KRProgressHUD
 
 class PRSettingViewController: UIViewController {
+    
+    let appName: String = Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String ?? ""
+    let versionName: String = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+    let feedEmail = "@gmail.com"
+    let termsUrlStr: String = "https://www.app-privacy-policy.com/live.php?token=KGTgGUpadu3O7nCSvdfB0iyy0fAITZ8E"
+    let privacyUrlStr: String = "https://www.app-privacy-policy.com/live.php?token=BVwXg5Q3sVpkWcOcvPIxYeJDIOUbzwWE"
+    let appstoreShareUrl: String = "itms-apps://itunes.apple.com/cn/app/id\("6446244299")?mt=8"
     
     var mainVC: ViewController!
     
@@ -18,7 +28,8 @@ class PRSettingViewController: UIViewController {
         ["id":"0", "icon":"Frame 10", "title":"Restore Purchase"],
         ["id":"1", "icon":"Frame 11", "title":"Share Our App"],
         ["id":"2", "icon":"Frame 8", "title":"Terms of use"],
-        ["id":"3", "icon":"Frame 12", "title":"Privacy Policy"]
+        ["id":"3", "icon":"Frame 12", "title":"Privacy Policy"],
+        ["id":"4", "icon":"Frame 8", "title":"Feedback"]
     ]
     
     override func viewDidLoad() {
@@ -174,10 +185,16 @@ extension PRSettingViewController: UICollectionViewDelegate {
             // restore
         } else if idstr == "1" {
             // share
+            userShareAction()
         } else if idstr == "2" {
             // terms
+            userTermsAction()
         } else if idstr == "3" {
             // privacy
+            userPrivacyAction()
+        } else if idstr == "4" {
+            // feedback
+            userFeedbackAction()
         }
         
         
@@ -188,6 +205,56 @@ extension PRSettingViewController: UICollectionViewDelegate {
     }
 }
 
+extension PRSettingViewController: MFMailComposeViewControllerDelegate {
+    
+    func userTermsAction() {
+        if let url = URL(string: termsUrlStr) {
+            if UIApplication.shared.canOpenURL(url) {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            }
+        }
+    }
+    
+    func userPrivacyAction() {
+        if let url = URL(string: privacyUrlStr) {
+            if UIApplication.shared.canOpenURL(url) {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            }
+        }
+    }
+    
+    func userShareAction() {
+        let shareUrl = appstoreShareUrl
+        let shareStr = "Share with friends:\(shareUrl)"
+        let shareImage = UIImage(named: "appiconthumb") ?? UIImage()
+        let activityItems = [shareImage, shareStr] as [Any]
+        let vc = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
+        self.present(vc, animated: true)
+    }
+    
+    func userFeedbackAction() {
+        if MFMailComposeViewController.canSendMail() {
+            let systemVersion = UIDevice.current.systemVersion
+            let modelName = Device.current.description
+            let appVersion = versionName
+            let appName = "\(appName)"
+            let controller = MFMailComposeViewController()
+            controller.mailComposeDelegate = self
+            controller.setSubject("\(appName) Feedback")
+            controller.setToRecipients([feedEmail])
+            controller.setMessageBody("\n\n\nSystem Version：\(systemVersion)\n Device Name：\(modelName)\n App Name：\(appName)\n App Version：\(appVersion )", isHTML: false)
+            self.present(controller, animated: true, completion: nil)
+        } else {
+            KRProgressHUD.showError(withMessage: "The device doesn't support email")
+        }
+    }
+    
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        controller.dismiss(animated: true, completion: nil)
+    }
+    
+    
+}
 
 
 

@@ -8,8 +8,6 @@
 import UIKit
 
 class PRStartAnimationVC: UIViewController {
-
-    
     
     private let radarAnimation = "radarAnimation"
     private var animationLayer: CALayer?

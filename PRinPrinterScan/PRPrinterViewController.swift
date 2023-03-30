@@ -296,20 +296,49 @@ extension PRPrinterViewController {
         printerBrandV.closeClickBlock = {
             [weak self] in
             guard let `self` = self else {return}
-            DispatchQueue.main.async { [unowned printerBrandV] in
+            DispatchQueue.main.async {
                 UIView.animate(withDuration: 0.3, delay: 0) {
                     printerBrandV.alpha = 0
-                } completion: { finished in
+                } completion: {[weak self] finished in
+                    guard let `self` = self else {return}
                     if finished {
-                        printerBrandV.removeFromSuperview()
+                        DispatchQueue.main.async {
+                            printerBrandV.removeFromSuperview()
+                        }
                     }
                 }
+            }
+        }
+        printerBrandV.contentItemClickBlock = {
+            [weak self] in
+            guard let `self` = self else {return}
+            DispatchQueue.main.async {
+                self.showPrinterPicker()
             }
         }
         
     }
     
-    
+    func showPrinterPicker() {
+        
+        let printerPicker = UIPrinterPickerController(initiallySelectedPrinter: nil)
+        printerPicker.present(animated: true, completionHandler: {
+            [weak self] printerPickerController, userDidSelect, error in
+            guard let `self` = self else {return}
+            DispatchQueue.main.async {
+                if (error != nil) {
+                    debugPrint("Error : \(error)")
+                } else {
+                    if let printer: UIPrinter = printerPickerController.selectedPrinter {
+                        debugPrint("Printer displayName : \(printer.displayName)")
+                        debugPrint("Printer url : \(printer.url)")
+                    } else {
+                        debugPrint("Printer is not selected")
+                    }
+                }
+            }
+        })
+    }
     
     
 }
@@ -412,67 +441,43 @@ extension PRPrinterViewController: UIImagePickerControllerDelegate {
         
         if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
             if #available(iOS 14, *) {
-                PHPhotoLibrary.requestAuthorization(for: .readWrite) { status in
-                    switch status {
-                    case .authorized:
-                        DispatchQueue.main.async {
+                PHPhotoLibrary.requestAuthorization(for: .readWrite) {[weak self] status in
+                    guard let `self` = self else {return}
+                    DispatchQueue.main.async {
+                        switch status {
+                        case .authorized:
                             self.presentLimitedPhotoPickerController()
-                        }
-                    case .limited:
-                        DispatchQueue.main.async {
+                        case .limited:
                             self.presentLimitedPhotoPickerController()
-                        }
-                    case .notDetermined:
-                        if status == PHAuthorizationStatus.authorized {
-                            DispatchQueue.main.async {
+                        case .notDetermined:
+                            if status == PHAuthorizationStatus.authorized {
+                                self.presentLimitedPhotoPickerController()
+                            } else if status == PHAuthorizationStatus.limited {
                                 self.presentLimitedPhotoPickerController()
                             }
-                        } else if status == PHAuthorizationStatus.limited {
-                            DispatchQueue.main.async {
-                                self.presentLimitedPhotoPickerController()
-                            }
-                        }
-                    case .denied:
-                        DispatchQueue.main.async {
-                            [weak self] in
-                            guard let `self` = self else {return}
+                        case .denied:
                             self.showPhotoDeniedAlert()
-                        }
-                    case .restricted:
-                        DispatchQueue.main.async {
-                            [weak self] in
-                            guard let `self` = self else {return}
+                        case .restricted:
                             self.showPhotoDeniedAlert()
+                        default: break
                         }
-                    default: break
                     }
+                    
                 }
             } else {
-                
-                PHPhotoLibrary.requestAuthorization { status in
-                    switch status {
-                    case .authorized:
-                        DispatchQueue.main.async {
+                DispatchQueue.main.async {
+                    PHPhotoLibrary.requestAuthorization { status in
+                        switch status {
+                        case .authorized:
                             self.presentLimitedPhotoPickerController()
-                        }
-                    case .limited:
-                        DispatchQueue.main.async {
+                        case .limited:
                             self.presentLimitedPhotoPickerController()
-                        }
-                    case .denied:
-                        DispatchQueue.main.async {
-                            [weak self] in
-                            guard let `self` = self else {return}
+                        case .denied:
                             self.showPhotoDeniedAlert()
-                        }
-                        
-                    case .restricted:
-                        DispatchQueue.main.async {
-                            [weak self] in
-                            guard let `self` = self else {return}
+                        case .restricted:
                             self.showPhotoDeniedAlert()
+                        default: break
                         }
-                    default: break
                     }
                 }
             }
@@ -490,7 +495,6 @@ extension PRPrinterViewController: UIImagePickerControllerDelegate {
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
         alert.addAction(confirmAction)
         alert.addAction(cancelAction)
-        
         self.present(alert, animated: true)
     }
     
@@ -504,22 +508,25 @@ extension PRPrinterViewController: UIImagePickerControllerDelegate {
         config.library.preselectedItems = nil
         let picker = YPImagePicker(configuration: config)
         picker.view.backgroundColor = UIColor.white
-        picker.didFinishPicking { [unowned picker] items, cancelled in
-            var imgs: [UIImage] = []
-            for item in items {
-                switch item {
-                case .photo(let photo):
-                    if let img = photo.image.scaled(toWidth: 1200) {
-                        imgs.append(img)
+        picker.didFinishPicking { [weak self] items, cancelled in
+            guard let `self` = self else {return}
+            DispatchQueue.main.async {
+                var imgs: [UIImage] = []
+                for item in items {
+                    switch item {
+                    case .photo(let photo):
+                        if let img = photo.image.scaled(toWidth: 1200) {
+                            imgs.append(img)
+                        }
+                        debugPrint(photo)
+                    case .video(let video):
+                        debugPrint(video)
                     }
-                    print(photo)
-                case .video(let video):
-                    print(video)
                 }
-            }
-            picker.dismiss(animated: true, completion: nil)
-            if !cancelled {
-                self.showPrinterVC(images: imgs)
+                picker.dismiss(animated: true, completion: nil)
+                if !cancelled {
+                    self.showPrinterVC(images: imgs)
+                }
             }
         }
         

@@ -25,17 +25,32 @@ class PRSettingViewController: UIViewController {
     var collection: UICollectionView!
     
     let itemList: [[String : String]] = [
-        ["id":"0", "icon":"Frame 10", "title":"Restore Purchase"],
+//        ["id":"0", "icon":"Frame 10", "title":"Restore Purchase"],
         ["id":"1", "icon":"Frame 11", "title":"Share Our App"],
         ["id":"2", "icon":"Frame 8", "title":"Terms of use"],
         ["id":"3", "icon":"Frame 12", "title":"Privacy Policy"],
-        ["id":"4", "icon":"Frame 8", "title":"Feedback"]
+        ["id":"4", "icon":"Frame 9", "title":"Feedback"]
     ]
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        addNotifi()
         setupV()
+    }
+    
+    func addNotifi() {
+        NotificationCenter.default.addObserver(self, selector: #selector(subscribeSuccessAction(notification: )), name: NSNotification.Name(rawValue: PRPrinterStoreManager.PurchaseNotificationKeys.success), object: nil)
+        
+    }
+    
+    @objc func subscribeSuccessAction(notification: Notification) {
+        DispatchQueue.main.async {
+            [weak self] in
+            guard let `self` = self else {return}
+            self.updateSubBannerStatus()
+            self.collection.reloadData()
+        }
+
     }
     
     func setupV() {
@@ -104,15 +119,18 @@ class PRSettingViewController: UIViewController {
             $0.width.height.greaterThanOrEqualTo(10)
         }
         
-        if PRPurchaseSubManager.default.isInSubscribe {
+        updateSubBannerStatus()
+        
+    }
+    
+    func updateSubBannerStatus() {
+        
+        if PRPrinterStoreManager.default.inSubscription {
             subscribeBanner.isHidden = true
         } else {
             subscribeBanner.isHidden = false
         }
-        
-        
     }
-    
     
     
     @objc func subscribeBannerClick(sender: UIButton) {
@@ -157,7 +175,7 @@ extension PRSettingViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         
-        if PRPurchaseSubManager.default.isInSubscribe {
+        if PRPrinterStoreManager.default.inSubscription {
             return UIEdgeInsets(top: 40, left: 0, bottom: 0, right: 0)
         } else {
             return UIEdgeInsets(top: 130, left: 0, bottom: 0, right: 0)
@@ -183,6 +201,7 @@ extension PRSettingViewController: UICollectionViewDelegate {
         let idstr = item["id"]
         if idstr == "0" {
             // restore
+            userRestoreAction()
         } else if idstr == "1" {
             // share
             userShareAction()
@@ -206,6 +225,17 @@ extension PRSettingViewController: UICollectionViewDelegate {
 }
 
 extension PRSettingViewController: MFMailComposeViewControllerDelegate {
+    
+    func userRestoreAction() {
+        
+        PRPrinterStoreManager.default.restore { success in
+            if success {
+                KRProgressHUD.showSuccess(withMessage: "The subscription was restored successfully")
+            } else {
+                KRProgressHUD.showMessage("Nothing to Restore")
+            }
+        }
+    }
     
     func userTermsAction() {
         if let url = URL(string: termsUrlStr) {

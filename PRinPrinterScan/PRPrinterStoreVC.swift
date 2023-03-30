@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import KRProgressHUD
 
 class PRPrinterStoreVC: UIViewController {
 
@@ -15,7 +16,7 @@ class PRPrinterStoreVC: UIViewController {
     var defaultYearPrice: Double = 24.99
     var currentSymbol: String = "$"
     
-    
+    let backBtn = UIButton()
     let theContinueBtn = UIButton()
     let monthBgBtn = UIButton()
     let yearBgBtn = UIButton()
@@ -139,6 +140,16 @@ class PRPrinterStoreVC: UIViewController {
         
         monthBeforePriceLabel.attributedText = NSAttributedString(string: monthBeforeStr, attributes: [NSAttributedString.Key.font : (UIFont(name: "SFProText-Regular", size: 14) ?? UIFont.systemFont(ofSize: 14)), NSAttributedString.Key.foregroundColor : (UIColor(hexString: "#999999") ?? UIColor.white), NSAttributedString.Key.strikethroughStyle : 1, NSAttributedString.Key.strikethroughColor : (UIColor(hexString: "#999999") ?? UIColor.white)])
         
+        //
+        let monthPreImgV = UIImageView()
+        monthPreImgV.image("Group 126")
+        monthBgBtn.addSubview(monthPreImgV)
+        monthPreImgV.snp.makeConstraints {
+            $0.width.height.equalTo(108/2)
+            $0.right.equalTo(monthBgBtn.snp.right).offset(18)
+            $0.top.equalTo(monthBgBtn.snp.right).offset(-20)
+        }
+        
     }
     
     func setupYearPurchaseBtn() {
@@ -260,7 +271,7 @@ class PRPrinterStoreVC: UIViewController {
         topIconImgV.contentMode = .scaleAspectFit
         
         //
-        let backBtn = UIButton()
+        
         backBtn.setImage(UIImage(named: "Group 78"), for: .normal)
         view.addSubview(backBtn)
         backBtn.snp.makeConstraints {
@@ -283,6 +294,18 @@ class PRPrinterStoreVC: UIViewController {
     }
     
     @objc func theContinueBtnClick(sender: UIButton) {
+        PRPrinterStoreManager.default.subscribeIapOrder(iapType: PRPrinterStoreManager.default.currentIapType, source: "shop") {[weak self] subSuccess, errorStr in
+            guard let `self` = self else {return}
+            DispatchQueue.main.async {
+                if subSuccess {
+                    KRProgressHUD.showSuccess(withMessage: "The subscription was successful!")
+                    self.backBtnClick(sender: self.backBtn)
+                } else {
+                    KRProgressHUD.showError(withMessage: errorStr ?? "The subscription failed")
+                }
+            }
+
+        }
         
     }
     
@@ -336,15 +359,12 @@ extension PRPrinterStoreVC {
     
     func fetchPriceLabels() {
         
-        
         if PRPrinterStoreManager.default.currentProducts.count == PRPrinterStoreManager.default.iapTypeList.count {
             updatePrice(products: PRPrinterStoreManager.default.currentProducts)
         } else {
             PRPrinterStoreManager.default.fetchPurchaseInfo {[weak self] productList in
                 guard let `self` = self else {return}
                 DispatchQueue.main.async {
-                    [weak self] in
-                    guard let `self` = self else {return}
                     if productList.count == PRPrinterStoreManager.default.iapTypeList.count {
                         self.updatePrice(products: productList)
                     }

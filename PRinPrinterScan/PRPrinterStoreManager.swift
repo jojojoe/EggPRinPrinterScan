@@ -36,8 +36,6 @@ class PRPrinterStoreManager {
         case year = "com..oneyear"
     }
     
-    
-    
     public enum VerifyLocalReceiptResult {
         case success(receipt: InAppReceipt)
         case error(error: IARError)
@@ -50,10 +48,9 @@ class PRPrinterStoreManager {
         case notPurchased
     }
     
-    
     var iapTypeList: [IAPType] = [.month, .year]
     var currentIapType: IAPType = .year
-    var inSubscription: Bool = false
+    var inSubscription: Bool = true
     var currentProducts: [PRPrinterStoreManager.IAPProduct] = []
     
 }
@@ -95,7 +92,6 @@ extension PRPrinterStoreManager {
                             successBlock?(true)
                         } else {
                             successBlock?(false)
-//                            KRProgressHUD.showMessage("Nothing to Restore")
                         }
                     }
                 }

@@ -7,7 +7,8 @@
 
 import UIKit
 import WebKit
-
+import KRProgressHUD
+import Alertift
 class PRPrinterWebPrinterVC: UIViewController {
 
     let textfieldV = UITextField()
@@ -112,7 +113,7 @@ class PRPrinterWebPrinterVC: UIViewController {
         }
         textfieldV.font = UIFont(name: "SFProText-Medium", size: 12)
         textfieldV.textColor = .black
-        textfieldV.placeholder = "Web URL"
+        textfieldV.placeholder = "Please enter the URL..."
         textfieldV.returnKeyType = .go
         textfieldV.delegate = self
         textfieldV.inputAccessoryView = toolView
@@ -129,6 +130,7 @@ class PRPrinterWebPrinterVC: UIViewController {
         clearButton.isHidden = true
         //
         webV.layer.cornerRadius = 12
+        webV.navigationDelegate = self
         webV.clipsToBounds = true
         view.addSubview(webV)
         webV.snp.makeConstraints {
@@ -137,9 +139,6 @@ class PRPrinterWebPrinterVC: UIViewController {
             $0.top.equalTo(inpBgV.snp.bottom).offset(20)
             $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-20)
         }
-        
-        
-        
     }
 
     
@@ -162,11 +161,9 @@ class PRPrinterWebPrinterVC: UIViewController {
         self.textfieldV.resignFirstResponder()
         
         let printInVC = UIPrintInteractionController.shared
-        
         let info = UIPrintInfo(dictionary: nil)
         info.jobName = Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String ?? "Sample Print"
         printInVC.printFormatter = webV.viewPrintFormatter()
-        
         printInVC.present(animated: true) {
             controller, completed, error in
             
@@ -175,8 +172,46 @@ class PRPrinterWebPrinterVC: UIViewController {
     
     @objc func clearButtonClick(sender: UIButton) {
         textfieldV.text = ""
+        textfieldV.becomeFirstResponder()
     }
     
+}
+
+extension PRPrinterWebPrinterVC: WKNavigationDelegate {
+    
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction) async -> WKNavigationActionPolicy {
+        return .allow
+    }
+    
+    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        DispatchQueue.main.async {
+            [weak self] in
+            guard let `self` = self else {return}
+            self.showAlertFailed()
+        }
+        
+    }
+    
+    func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+        DispatchQueue.main.async {
+            [weak self] in
+            guard let `self` = self else {return}
+            self.showAlertFailed()
+        }
+    }
+    
+    func showAlertFailed() {
+        Alertift.alert(title: "Oops!", message: "Please enter a valid web site")
+            .action(.cancel("OK"), handler: { _, _, _ in
+                DispatchQueue.main.async {
+                    [weak self] in
+                    guard let `self` = self else {return}
+                    self.textfieldV.becomeFirstResponder()
+                }
+            })
+            .show(on: self, completion: nil)
+        
+    }
 }
 
 extension PRPrinterWebPrinterVC: UITextFieldDelegate {
@@ -192,9 +227,19 @@ extension PRPrinterWebPrinterVC: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
-        if let urlstr = textField.text, let url = URL(string: urlstr) {
-            
-            webV.load(URLRequest(url: url))
+        if let urlstr = textField.text {
+            var urlstr_m = urlstr
+            if !urlstr.contains("http") {
+                urlstr_m = "https://\(urlstr)"
+            }
+            if let url = URL(string: urlstr_m) {
+                webV.load(URLRequest(url: url))
+                textField.resignFirstResponder()
+            } else {
+                showAlertFailed()
+            }
+        } else {
+            showAlertFailed()
         }
         
         return true

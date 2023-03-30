@@ -10,8 +10,6 @@ import WebKit
 import PDFKit
 import KRProgressHUD
 
-
-
 class PRPrinterOptionsVC: UIViewController {
     
     var contentUrl: URL
@@ -412,7 +410,6 @@ class PRPrinterOptionsVC: UIViewController {
                         if let docu = PDFDocument(data: pdfdata) {
                             self.processDocumentWith(docu: docu)
                         }
-                        
                     }
                     
                 } catch {
@@ -483,8 +480,13 @@ extension PRPrinterOptionsVC {
 //            let resultUlrs = PRPrinterManager.default.processMakeNewPDFImagesUrls()
 //            showSystemPrinter(urls: resultUlrs)
 //        }
-        let resultUlrs = PRPrinterManager.default.processMakeNewPDFImagesUrls()
-        showSystemPrinter(urls: resultUlrs)
+        if PRPrinterManager.default.hasloadBigPDFImg == true {
+            let resultUlrs = PRPrinterManager.default.processMakeNewPDFImagesUrls()
+            showSystemPrinter(urls: resultUlrs)
+        } else {
+            showSystemPrinter(urls: [contentUrl])
+        }
+
     }
     
     
@@ -574,24 +576,22 @@ extension PRPrinterOptionsVC {
         
         let printerPicker = UIPrinterPickerController(initiallySelectedPrinter: nil)
         printerPicker.present(animated: true, completionHandler: {
-            
-            [unowned self] printerPickerController, userDidSelect, error in
-            
-            if (error != nil) {
-                debugPrint("Error : \(String(describing: error))")
-            } else {
-                if let printer: UIPrinter = printerPickerController.selectedPrinter {
-                    debugPrint("Printer displayName : \(printer.displayName)")
-                    debugPrint("Printer url : \(printer.url)")
-                    DispatchQueue.main.async {
-                        [weak self] in
-                        guard let `self` = self else {return}
-                        self.printerNameL.text = printer.displayName
-                    }
+            [weak self] printerPickerController, userDidSelect, error in
+            guard let `self` = self else {return}
+            DispatchQueue.main.async {
+                if (error != nil) {
+                    debugPrint("Error : \(String(describing: error))")
                 } else {
-                    debugPrint("Printer is not selected")
+                    if let printer: UIPrinter = printerPickerController.selectedPrinter {
+                        debugPrint("Printer displayName : \(printer.displayName)")
+                        debugPrint("Printer url : \(printer.url)")
+                        self.printerNameL.text = printer.displayName
+                    } else {
+                        debugPrint("Printer is not selected")
+                    }
                 }
             }
+            
         })
     }
 }

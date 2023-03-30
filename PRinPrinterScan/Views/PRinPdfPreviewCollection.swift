@@ -11,65 +11,26 @@ import PDFKit
 
 class PRinPdfPreviewCollection: UIView {
 
-//    var pdfDocument: PDFDocument
     var collection: UICollectionView!
     let thumbnailCache = NSCache<NSNumber, UIImage>()
     private let downloadQueue = DispatchQueue(label: "com.printscan.pdfviewer.thumbnail")
-    
-    
-//    var currentSheetCount: Int = 1
-//    var currentRangeMin: Int
-//    var currentRangeMax: Int
-//    var totalPageCount: Int
-//    var pdfCount: Int
     
     
     func updatePerPage() {
         collection.reloadData()
     }
     
-//    func updatePerPage(sheetCount: Int, rangeMin: Int, rangeMax: Int, pageCount: Int) {
-//        self.currentSheetCount = sheetCount
-//        self.currentRangeMin = rangeMin
-//        self.currentRangeMax = rangeMax
-//        self.totalPageCount = pageCount
-//
-//
-//    }
-    
     override init(frame: CGRect) {
         super.init(frame: frame )
         setupV()
     }
     
-    
-//    init(frame: CGRect, rangeMin: Int, rangeMax: Int , pageCount: Int) {
-//        self.pdfCount = pdfDocument.pageCount
-//        self.pdfDocument = pdfDocument
-//        self.totalPageCount = pageCount
-//        self.currentRangeMin = rangeMin
-//        self.currentRangeMax = rangeMax
-//        super.init(frame: frame)
-//        
-//        
-//        
-//    }
-//    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    
-    
-//    func updatePdfData(document: PDFDocument) {
-//        pdfDocument = document
-//        collection.reloadData()
-//
-//    }
-    
     func updatePdfRange() {
-//        currentRangeMin = min
-//        currentRangeMax = max
+
         collection.reloadData()
     }
     

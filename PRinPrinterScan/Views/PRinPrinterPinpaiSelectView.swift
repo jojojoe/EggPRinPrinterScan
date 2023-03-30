@@ -10,6 +10,7 @@ import UIKit
 class PRinPrinterPinpaiSelectView: UIView {
     var collection: UICollectionView!
     var closeClickBlock: (()->Void)?
+    var contentItemClickBlock: (()->Void)?
     var currentIndexP: IndexPath?
     var list: [String] = [
         "HP",
@@ -188,7 +189,7 @@ extension PRinPrinterPinpaiSelectView: UICollectionViewDelegate {
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.3) {
             [weak self] in
             guard let `self` = self else {return}
-            self.closeBtnClick(sender: nil)
+            self.contentItemClickBlock?()
         }
     }
     

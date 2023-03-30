@@ -15,15 +15,6 @@ import Vision
 import VisionKit
 import PDFKit
 
-// https://www.cnblogs.com/frounk/p/16853689.html
-/*
- public.composite-content
- public.message
- public.contact
- public.text
- public.image
- 
- */
 
 class ViewController: UIViewController {
 

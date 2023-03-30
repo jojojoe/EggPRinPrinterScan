@@ -54,10 +54,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 }
             } else {
                 setupViewController(connectionOptions.urlContexts.first?.url)
-                
             }
-            
-            
         }
         
     }
@@ -76,16 +73,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 nav.pushViewController(pageOptionVC, animated: true)
             }
         }
-        
     }
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         debugPrint("openURLContexts")
+
         if let targetUrl = URLContexts.first?.url {
             debugPrint("targetUrl - \(targetUrl)")
-            let pageOptionVC = PRPrinterOptionsVC(contentUrl: targetUrl)
-            if let nav = self.rootNav {
-                nav.pushViewController(pageOptionVC, animated: true)
+            DispatchQueue.main.async {
+                if let nav = self.rootNav {
+                    let pageOptionVC = PRPrinterOptionsVC(contentUrl: targetUrl)
+                    nav.pushViewController(pageOptionVC, animated: true)
+                }
             }
         }
         

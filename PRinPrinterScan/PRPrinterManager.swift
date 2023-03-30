@@ -13,9 +13,7 @@ class PRPrinterManager: NSObject {
     
     static let `default` = PRPrinterManager()
     
-    
     var document: PDFDocument = PDFDocument()
-    
     
     let pdfWidth: CGFloat = 595
     let pdfHeight: CGFloat = 842
@@ -64,13 +62,10 @@ class PRPrinterManager: NSObject {
         currentRangeMax = sheetPageCount
     }
     
-    
     func loadPdfBigImg() {
         
         let pdfPageSize = CGRect(x: 0, y: 0, width: PRPrinterManager.default.currentPaperSizeItem.pwidth, height: PRPrinterManager.default.currentPaperSizeItem.pheight)
-        
         loadPdfPhotoGroup = DispatchGroup()
-        
         urlPathListDict.removeAll()
         
         for pageIdx in 0..<document.pageCount {

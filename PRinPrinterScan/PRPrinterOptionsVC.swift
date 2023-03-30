@@ -411,7 +411,6 @@ class PRPrinterOptionsVC: UIViewController {
                             self.processDocumentWith(docu: docu)
                         }
                     }
-                    
                 } catch {
                     debugPrint("txt url error - \(error)")
                 }
@@ -428,9 +427,7 @@ class PRPrinterOptionsVC: UIViewController {
                         if let docu = PDFDocument(data: pdfdata) {
                             self.processDocumentWith(docu: docu)
                         }
-                        
                     }
-                    
                 } catch {
                     
                 }
@@ -521,9 +518,7 @@ extension PRPrinterOptionsVC {
     }
     
     func updatePerSheetCount(sheetStr: String) {
-//        currentSheetStr = sheetStr
-//        let sheetCou = sheetStr.int ?? 1
-        
+
         PRPrinterManager.default.updateAndProcessSheetPageTotalCount(sheetStr: sheetStr)
         
         self.previewCollection.updatePerPage()
@@ -568,9 +563,6 @@ extension PRPrinterOptionsVC {
     }
 }
 
-
-
-
 extension PRPrinterOptionsVC {
     func showPrinterPicker() {
         
@@ -591,7 +583,6 @@ extension PRPrinterOptionsVC {
                     }
                 }
             }
-            
         })
     }
 }
@@ -602,7 +593,6 @@ extension PRPrinterOptionsVC {
         let fmt: UIViewPrintFormatter = webView.viewPrintFormatter()
         let render: UIPrintPageRenderer = UIPrintPageRenderer()
         render.addPrintFormatter(fmt, startingAtPageAt: 0)
-//        let page = CGRect(x: 0, y: 0, width: 210, height: 297)
         
         let page = CGRect(x: 0, y: 0, width: PRPrinterManager.default.currentPaperSizeItem.pwidth, height: PRPrinterManager.default.currentPaperSizeItem.pheight)
         let printable = CGRectInset(page, 20, 20)

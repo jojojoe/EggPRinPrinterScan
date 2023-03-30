@@ -9,15 +9,22 @@ import UIKit
 import MessageUI
 import DeviceKit
 import KRProgressHUD
+//Fast Print
+//6446986870
+//com.scan.print.fast
+//zhangyangzi0101@aliyun.com
+//https://sites.google.com/view/fast-print-terms-of-use/home
+//https://sites.google.com/view/fast-print-privacy-policy/home
+
 
 class PRSettingViewController: UIViewController {
     
-    let appName: String = Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String ?? ""
-    let versionName: String = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
-    let feedEmail = "@gmail.com"
-    let termsUrlStr: String = "https://www.app-privacy-policy.com/live.php?token=KGTgGUpadu3O7nCSvdfB0iyy0fAITZ8E"
-    let privacyUrlStr: String = "https://www.app-privacy-policy.com/live.php?token=BVwXg5Q3sVpkWcOcvPIxYeJDIOUbzwWE"
-    let appstoreShareUrl: String = "itms-apps://itunes.apple.com/cn/app/id\("6446244299")?mt=8"
+    let appName: String = Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String ?? "Fast Print"
+    let versionName: String = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
+    let feedEmail = "zhangyangzi0101@aliyun.com"
+    let termsUrlStr: String = "https://sites.google.com/view/fast-print-terms-of-use/home"
+    let privacyUrlStr: String = "https://sites.google.com/view/fast-print-privacy-policy/home"
+    let appstoreShareUrl: String = "itms-apps://itunes.apple.com/cn/app/id\("6446986870")?mt=8"
     
     var mainVC: ViewController!
     
@@ -86,9 +93,6 @@ class PRSettingViewController: UIViewController {
         subscribeBanner.layer.shadowOpacity = 0.15
         subscribeBanner.layer.shadowRadius = 8
         subscribeBanner.addTarget(self, action: #selector(subscribeBannerClick(sender: )), for: .touchUpInside)
-        
-        //
-        
         //
         let subBannerImagV = UIImageView()
         subBannerImagV.image = UIImage(named: "Group 129")
@@ -215,7 +219,6 @@ extension PRSettingViewController: UICollectionViewDelegate {
             // feedback
             userFeedbackAction()
         }
-        
         
     }
     

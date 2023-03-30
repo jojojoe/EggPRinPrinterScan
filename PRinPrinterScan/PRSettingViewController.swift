@@ -259,8 +259,7 @@ extension PRSettingViewController: MFMailComposeViewControllerDelegate {
     func userShareAction() {
         let shareUrl = appstoreShareUrl
         let shareStr = "Share with friends:\(shareUrl)"
-        let shareImage = UIImage(named: "appiconthumb") ?? UIImage()
-        let activityItems = [shareImage, shareStr] as [Any]
+        let activityItems = [shareStr] as [Any]
         let vc = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
         self.present(vc, animated: true)
     }

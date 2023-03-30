@@ -78,7 +78,7 @@ class PRPrinterViewController: UIViewController {
         }
         
         //
-        let connectBgV = UIView()
+        let connectBgV = UIButton()
         connectBgV.backgroundColor = .white
         connectBgV.layer.cornerRadius = 18
         view.addSubview(connectBgV)
@@ -88,6 +88,7 @@ class PRPrinterViewController: UIViewController {
             $0.height.equalTo(110)
             $0.top.equalTo(topLabel1.snp.bottom).offset(24)
         }
+        connectBgV.addTarget(self, action: #selector(connectBtnClick(sender: )), for: .touchUpInside)
         connectBgV.layer.shadowColor = UIColor.lightGray.cgColor
         connectBgV.layer.shadowOffset = CGSize(width: 0, height: 4)
         connectBgV.layer.shadowRadius = 10
@@ -107,6 +108,7 @@ class PRPrinterViewController: UIViewController {
         
         //
         let connectBtn = UIButton()
+        connectBtn.isUserInteractionEnabled = false
         connectBtn.backgroundColor = UIColor(hexString: "#4285F4")
         connectBtn.setTitle("Connect", for: .normal)
         connectBtn.titleLabel?.font = UIFont(name: "SFProText-Regular", size: 14)
@@ -119,7 +121,7 @@ class PRPrinterViewController: UIViewController {
             $0.width.equalTo(90)
             $0.height.equalTo(32)
         }
-        connectBtn.addTarget(self, action: #selector(connectBtnClick(sender: )), for: .touchUpInside)
+        
         //
         let leidaBgV = UIView()
         connectBgV.addSubview(leidaBgV)

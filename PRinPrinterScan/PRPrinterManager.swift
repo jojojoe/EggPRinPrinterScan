@@ -64,7 +64,7 @@ class PRPrinterManager: NSObject {
     
     func loadPdfBigImg() {
         
-        let pdfPageSize = CGRect(x: 0, y: 0, width: PRPrinterManager.default.currentPaperSizeItem.pwidth, height: PRPrinterManager.default.currentPaperSizeItem.pheight)
+        let pdfPageSize = CGRect(x: 0, y: 0, width: PRPrinterManager.default.currentPaperSizeItem.pwidth * 2, height: PRPrinterManager.default.currentPaperSizeItem.pheight * 2)
         loadPdfPhotoGroup = DispatchGroup()
         urlPathListDict.removeAll()
         
@@ -108,59 +108,63 @@ class PRPrinterManager: NSObject {
         var urls: [URL] = []
         
         for indexPathItem in 0..<currentSheetTotalPageCount {
-            let canvasBgV = UIView(frame: CGRect(x: 0, y: 0, width: PRPrinterManager.default.currentPaperSizeItem.pwidth, height: PRPrinterManager.default.currentPaperSizeItem.pheight))
-            //
-            let currentSheetCount = currentSheetStr.int ?? 1
             
-            var perPages: [Int] = []
-            let perPageIndexBegin = indexPathItem * currentSheetCount
-            for idx in 0..<(currentSheetStr.int ?? 1) {
-                let pagecount = perPageIndexBegin + idx
-                if pagecount < document.pageCount {
-                    perPages.append(pagecount)
-                }
-            }
-            
-            var imgVs: [UIImageView] = []
-            for pageIdx in perPages {
-                let imgV = UIImageView()
-                imgV.contentMode = .scaleAspectFit
-                canvasBgV.addSubview(imgV)
-                imgVs.append(imgV)
+            if indexPathItem >= (currentRangeMin - 1) && indexPathItem <= (currentRangeMax-1) {
+                let canvasBgV = UIView(frame: CGRect(x: 0, y: 0, width: PRPrinterManager.default.currentPaperSizeItem.pwidth, height: PRPrinterManager.default.currentPaperSizeItem.pheight))
                 
-                if let imgurl = self.urlPathListDict["\(pageIdx)"] {
-                    imgV.image = try? UIImage(url: imgurl)
+                //
+                let currentSheetCount = currentSheetStr.int ?? 1
+                var perPages: [Int] = []
+                let perPageIndexBegin = indexPathItem * currentSheetCount
+                for idx in 0..<(currentSheetStr.int ?? 1) {
+                    let pagecount = perPageIndexBegin + idx
+                    if pagecount < document.pageCount {
+                        perPages.append(pagecount)
+                    }
                 }
-            }
-            
-            if currentSheetCount == 1 {
-                let img0 = imgVs[0]
-                img0.frame = CGRect(x: 0, y: 0, width: canvasBgV.bounds.size.width, height: canvasBgV.bounds.size.height)
-            } else if currentSheetCount == 2 {
-                layoutImgsFrame(imgVs: imgVs, widCount: 1, heiCount: 2, perWid: canvasBgV.bounds.size.width, perHei: canvasBgV.bounds.size.height/2)
-            } else if currentSheetCount == 4 {
-                layoutImgsFrame(imgVs: imgVs, widCount: 2, heiCount: 2, perWid: canvasBgV.bounds.size.width/2, perHei: canvasBgV.bounds.size.height/2)
-            } else if currentSheetCount == 6 {
-                layoutImgsFrame(imgVs: imgVs, widCount: 3, heiCount: 2, perWid: canvasBgV.bounds.size.width/3, perHei: canvasBgV.bounds.size.height/2)
-            } else if currentSheetCount == 9 {
-                layoutImgsFrame(imgVs: imgVs, widCount: 3, heiCount: 3, perWid: canvasBgV.bounds.size.width/3, perHei: canvasBgV.bounds.size.height/3)
-            } else if currentSheetCount == 16 {
-                layoutImgsFrame(imgVs: imgVs, widCount: 4, heiCount: 4, perWid: canvasBgV.bounds.size.width/4, perHei: canvasBgV.bounds.size.height/4)
-            }
-            
-            if let bigImg = canvasBgV.screenshot {
-                let dateStr = CLongLong(round(Date().unixTimestamp*1000)).string
-                let filePath = NSTemporaryDirectory() + "\(dateStr)\(".jpg")"
-                let fileUrl = URL(fileURLWithPath: filePath)
-                if let imgdata = bigImg.jpegData(compressionQuality: 0.8) {
-                    do {
-                        try imgdata.write(to: fileUrl)
-                        urls.append(fileUrl)
-                    } catch {
-                        
+                
+                var imgVs: [UIImageView] = []
+                for pageIdx in perPages {
+                    let imgV = UIImageView()
+                    imgV.contentMode = .scaleAspectFit
+                    canvasBgV.addSubview(imgV)
+                    imgVs.append(imgV)
+                    
+                    if let imgurl = self.urlPathListDict["\(pageIdx)"] {
+                        imgV.image = try? UIImage(url: imgurl)
+                    }
+                }
+                
+                if currentSheetCount == 1 {
+                    let img0 = imgVs[0]
+                    img0.frame = CGRect(x: 0, y: 0, width: canvasBgV.bounds.size.width, height: canvasBgV.bounds.size.height)
+                } else if currentSheetCount == 2 {
+                    layoutImgsFrame(imgVs: imgVs, widCount: 1, heiCount: 2, perWid: canvasBgV.bounds.size.width, perHei: canvasBgV.bounds.size.height/2)
+                } else if currentSheetCount == 4 {
+                    layoutImgsFrame(imgVs: imgVs, widCount: 2, heiCount: 2, perWid: canvasBgV.bounds.size.width/2, perHei: canvasBgV.bounds.size.height/2)
+                } else if currentSheetCount == 6 {
+                    layoutImgsFrame(imgVs: imgVs, widCount: 3, heiCount: 2, perWid: canvasBgV.bounds.size.width/3, perHei: canvasBgV.bounds.size.height/2)
+                } else if currentSheetCount == 9 {
+                    layoutImgsFrame(imgVs: imgVs, widCount: 3, heiCount: 3, perWid: canvasBgV.bounds.size.width/3, perHei: canvasBgV.bounds.size.height/3)
+                } else if currentSheetCount == 16 {
+                    layoutImgsFrame(imgVs: imgVs, widCount: 4, heiCount: 4, perWid: canvasBgV.bounds.size.width/4, perHei: canvasBgV.bounds.size.height/4)
+                }
+                
+                if let bigImg = canvasBgV.screenshot {
+                    let dateStr = CLongLong(round(Date().unixTimestamp*1000)).string
+                    let filePath = NSTemporaryDirectory() + "\(dateStr)\(".jpg")"
+                    let fileUrl = URL(fileURLWithPath: filePath)
+                    if let imgdata = bigImg.jpegData(compressionQuality: 0.8) {
+                        do {
+                            try imgdata.write(to: fileUrl)
+                            urls.append(fileUrl)
+                        } catch {
+                            
+                        }
                     }
                 }
             }
+            
         }
         
         return urls

@@ -163,6 +163,7 @@ class PRPrinterWebPrinterVC: UIViewController {
         let printInVC = UIPrintInteractionController.shared
         let info = UIPrintInfo(dictionary: nil)
         info.jobName = Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String ?? "Sample Print"
+        printInVC.printInfo = info
         printInVC.printFormatter = webV.viewPrintFormatter()
         printInVC.present(animated: true) {
             controller, completed, error in

@@ -135,8 +135,8 @@ class PRPrinterClipboardVC: UIViewController {
         textFormatter.startPage = 0
         textFormatter.perPageContentInsets = UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12)
         textFormatter.maximumContentWidth = 16 * 72.0
+        printInVC.printInfo = info
         printInVC.printFormatter = textFormatter
-        
         printInVC.present(animated: true) {
             controller, completed, error in
             

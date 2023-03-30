@@ -818,6 +818,7 @@
 				DEVELOPMENT_TEAM = 53ADUL6525;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PRinPrinterScan/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Fast Print";
 				INFOPLIST_KEY_NSCameraUsageDescription = "App needs your camera permission to scan documents to generate PDF files to print.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "App needs your photo gallery permission to choose photo to print.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "App needs your photo gallery permission to choose photo to print.";
@@ -855,6 +856,7 @@
 				DEVELOPMENT_TEAM = 53ADUL6525;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PRinPrinterScan/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Fast Print";
 				INFOPLIST_KEY_NSCameraUsageDescription = "App needs your camera permission to scan documents to generate PDF files to print.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "App needs your photo gallery permission to choose photo to print.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "App needs your photo gallery permission to choose photo to print.";

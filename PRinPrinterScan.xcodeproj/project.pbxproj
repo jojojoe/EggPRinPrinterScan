@@ -14,8 +14,6 @@
 		D84CEBF129C70A5A00E9841E /* PRPrinterWebPrinterVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D84CEBF029C70A5A00E9841E /* PRPrinterWebPrinterVC.swift */; };
 		D84CEBF329C9E5EE00E9841E /* PRPrinterStoreVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D84CEBF229C9E5EE00E9841E /* PRPrinterStoreVC.swift */; };
 		D84CEBF529C9E62100E9841E /* PRPrinterSplashVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D84CEBF429C9E62100E9841E /* PRPrinterSplashVC.swift */; };
-		D8F43EA729BCAD60006932B0 /* 1.png in Resources */ = {isa = PBXBuildFile; fileRef = D8F43EA629BCAD60006932B0 /* 1.png */; };
-		D8F43EA929BCAD8B006932B0 /* 2.png in Resources */ = {isa = PBXBuildFile; fileRef = D8F43EA829BCAD8A006932B0 /* 2.png */; };
 		D8F43EAB29BF5875006932B0 /* PRinHomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F43EAA29BF5875006932B0 /* PRinHomeVC.swift */; };
 		D8F43EAD29BF6C3C006932B0 /* PRPrinterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F43EAC29BF6C3C006932B0 /* PRPrinterViewController.swift */; };
 		D8F43EAF29C0BEDC006932B0 /* PRinPdfPreviewCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F43EAE29C0BEDC006932B0 /* PRinPdfPreviewCollection.swift */; };
@@ -97,8 +95,6 @@
 		D84CEBF029C70A5A00E9841E /* PRPrinterWebPrinterVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRPrinterWebPrinterVC.swift; sourceTree = "<group>"; };
 		D84CEBF229C9E5EE00E9841E /* PRPrinterStoreVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRPrinterStoreVC.swift; sourceTree = "<group>"; };
 		D84CEBF429C9E62100E9841E /* PRPrinterSplashVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRPrinterSplashVC.swift; sourceTree = "<group>"; };
-		D8F43EA629BCAD60006932B0 /* 1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 1.png; sourceTree = "<group>"; };
-		D8F43EA829BCAD8A006932B0 /* 2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 2.png; sourceTree = "<group>"; };
 		D8F43EAA29BF5875006932B0 /* PRinHomeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRinHomeVC.swift; sourceTree = "<group>"; };
 		D8F43EAC29BF6C3C006932B0 /* PRPrinterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRPrinterViewController.swift; sourceTree = "<group>"; };
 		D8F43EAE29C0BEDC006932B0 /* PRinPdfPreviewCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRinPdfPreviewCollection.swift; sourceTree = "<group>"; };
@@ -263,8 +259,6 @@
 				EB10184029BB191D00FC51C9 /* Assets.xcassets */,
 				EB10184229BB191D00FC51C9 /* LaunchScreen.storyboard */,
 				EB10184529BB191D00FC51C9 /* Info.plist */,
-				D8F43EA629BCAD60006932B0 /* 1.png */,
-				D8F43EA829BCAD8A006932B0 /* 2.png */,
 			);
 			path = PRinPrinterScan;
 			sourceTree = "<group>";
@@ -508,13 +502,11 @@
 				EB1018A129BB34D600FC51C9 /* rotate@3x.png in Resources */,
 				EB1018A329BB34D600FC51C9 /* rotate@2x.png in Resources */,
 				EB1018A029BB34D600FC51C9 /* flash.png in Resources */,
-				D8F43EA929BCAD8B006932B0 /* 2.png in Resources */,
 				EB10189F29BB34D600FC51C9 /* Localizable.strings in Resources */,
 				EB10184429BB191D00FC51C9 /* LaunchScreen.storyboard in Resources */,
 				EB64967E29C02A76006D88F8 /* SF-Pro-Text-Regular.otf in Resources */,
 				EB64967F29C02A76006D88F8 /* SF-Pro-Text-Semibold.otf in Resources */,
 				EB1018A629BB34D600FC51C9 /* flashUnavailable.png in Resources */,
-				D8F43EA729BCAD60006932B0 /* 1.png in Resources */,
 				EB64967B29C02A76006D88F8 /* SF-Pro-Text-Bold.otf in Resources */,
 				EB1018A529BB34D600FC51C9 /* flashUnavailable@2x.png in Resources */,
 				EB1018A729BB34D600FC51C9 /* flashUnavailable@3x.png in Resources */,

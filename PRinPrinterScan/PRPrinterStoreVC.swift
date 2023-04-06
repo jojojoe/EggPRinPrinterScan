@@ -27,12 +27,17 @@ class PRPrinterStoreVC: UIViewController {
     let monthPriceLabel = UILabel()
     let monthPriceInfoLabel = UILabel()
     
-    
+    var pageDisappearBlock: (()->Void)?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupV()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        pageDisappearBlock?()
     }
     
     func setupV() {
@@ -43,8 +48,9 @@ class PRPrinterStoreVC: UIViewController {
         setupDescribeLabels()
         fetchPriceLabels()
         updateIapBtnStatus()
+        
+        
     }
-    
     
     
     func setupContinueBtn() {
@@ -105,7 +111,6 @@ class PRPrinterStoreVC: UIViewController {
         }
         //
 
-        monthPriceLabel.text = "\(currentSymbol)\(defaultMonthPrice)/month"
         monthPriceLabel.textColor = .black
         monthPriceLabel.font = UIFont(name: "SFProText-Medium", size: 12)
         monthBgBtn.addSubview(monthPriceLabel)
@@ -116,7 +121,6 @@ class PRPrinterStoreVC: UIViewController {
         }
         //
         
-        monthPriceInfoLabel.text = "\(currentSymbol)\(defaultMonthPrice)/mo"
         monthPriceInfoLabel.textColor = .black
         monthPriceInfoLabel.font = UIFont(name: "SFProText-Bold", size: 14)
         monthBgBtn.addSubview(monthPriceInfoLabel)
@@ -143,11 +147,11 @@ class PRPrinterStoreVC: UIViewController {
         //
         let monthPreImgV = UIImageView()
         monthPreImgV.image("Group 126")
-        monthBgBtn.addSubview(monthPreImgV)
+        view.addSubview(monthPreImgV)
         monthPreImgV.snp.makeConstraints {
             $0.width.height.equalTo(108/2)
             $0.right.equalTo(monthBgBtn.snp.right).offset(18)
-            $0.top.equalTo(monthBgBtn.snp.right).offset(-20)
+            $0.top.equalTo(monthBgBtn.snp.top).offset(-20)
         }
         
     }
@@ -179,7 +183,6 @@ class PRPrinterStoreVC: UIViewController {
         }
         //
 
-        yearPriceLabel.text = "\(currentSymbol)\(defaultYearPrice)/year"
         yearPriceLabel.textColor = .black
         yearPriceLabel.font = UIFont(name: "SFProText-Medium", size: 12)
         yearBgBtn.addSubview(yearPriceLabel)
@@ -190,7 +193,6 @@ class PRPrinterStoreVC: UIViewController {
         }
         //
         
-        yearPriceInfoLabel.text = "\(currentSymbol)\(Double(defaultYearPrice/12).accuracyToString(position: 2))/mo"
         yearPriceInfoLabel.textColor = .black
         yearPriceInfoLabel.font = UIFont(name: "SFProText-Bold", size: 14)
         yearBgBtn.addSubview(yearPriceInfoLabel)
@@ -339,34 +341,39 @@ class PRPrinterStoreVC: UIViewController {
 
 extension PRPrinterStoreVC {
     
-    func updatePrice(products: [PRPrinterStoreManager.IAPProduct]) {
-        let product0 = products[0]
-        let product1 = products[1]
-        currentSymbol = product0.priceLocale.currencySymbol ?? "$"
-        
-        if product0.iapID == PRPrinterStoreManager.IAPType.month.rawValue {
-            defaultMonthPrice = product0.price
-            defaultYearPrice = product1.price
-        } else {
-            defaultYearPrice = product0.price
-            defaultMonthPrice = product1.price
+    func updatePrice(productsm: [PRPrinterStoreManager.IAPProduct]?) {
+        if let products = productsm {
+            let product0 = products[0]
+            let product1 = products[1]
+            currentSymbol = product0.priceLocale.currencySymbol ?? "$"
+            
+            if product0.iapID == PRPrinterStoreManager.IAPType.month.rawValue {
+                defaultMonthPrice = product0.price
+                defaultYearPrice = product1.price
+            } else {
+                defaultYearPrice = product0.price
+                defaultMonthPrice = product1.price
+            }
         }
+        
         monthPriceLabel.text = "\(currentSymbol)\(defaultMonthPrice)/month"
-        monthPriceInfoLabel.text = "\(currentSymbol)\(defaultMonthPrice)/mo"
+        monthPriceInfoLabel.text = "\(currentSymbol)\(defaultMonthPrice)/Month"
         yearPriceLabel.text = "\(currentSymbol)\(defaultYearPrice)/year"
-        yearPriceInfoLabel.text = "\(currentSymbol)\(Double(defaultYearPrice/12).accuracyToString(position: 2))/mo"
+        yearPriceInfoLabel.text = "\(currentSymbol)\(defaultYearPrice)/Year"
+        //"\(currentSymbol)\(Double(defaultYearPrice/12).accuracyToString(position: 2))/mo"
     }
     
     func fetchPriceLabels() {
         
         if PRPrinterStoreManager.default.currentProducts.count == PRPrinterStoreManager.default.iapTypeList.count {
-            updatePrice(products: PRPrinterStoreManager.default.currentProducts)
+            updatePrice(productsm: PRPrinterStoreManager.default.currentProducts)
         } else {
+            updatePrice(productsm: nil)
             PRPrinterStoreManager.default.fetchPurchaseInfo {[weak self] productList in
                 guard let `self` = self else {return}
                 DispatchQueue.main.async {
                     if productList.count == PRPrinterStoreManager.default.iapTypeList.count {
-                        self.updatePrice(products: productList)
+                        self.updatePrice(productsm: productList)
                     }
                 }
             }

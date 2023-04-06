@@ -127,6 +127,23 @@ class PRPrinterClipboardVC: UIViewController {
     @objc func printerBtnClick(sender: UIButton) {
         self.contentTextV.resignFirstResponder()
         
+        
+        if PRPrinterStoreManager.default.inSubscription {
+            printerAction()
+        } else {
+            let shopVC = PRPrinterStoreVC()
+            self.present(shopVC, animated: true)
+            shopVC.pageDisappearBlock = {
+                [weak self] in
+                guard let `self` = self else {return}
+            }
+        }
+        
+        
+    }
+    
+    func printerAction() {
+        
         let printInVC = UIPrintInteractionController.shared
         
         let info = UIPrintInfo(dictionary: nil)

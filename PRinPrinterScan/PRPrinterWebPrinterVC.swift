@@ -160,6 +160,21 @@ class PRPrinterWebPrinterVC: UIViewController {
     @objc func printerBtnClick(sender: UIButton) {
         self.textfieldV.resignFirstResponder()
         
+        if PRPrinterStoreManager.default.inSubscription {
+            printerAction()
+        } else {
+            let shopVC = PRPrinterStoreVC()
+            self.present(shopVC, animated: true)
+            shopVC.pageDisappearBlock = {
+                [weak self] in
+                guard let `self` = self else {return}
+            }
+        }
+        
+    }
+    
+    func printerAction() {
+        
         let printInVC = UIPrintInteractionController.shared
         let info = UIPrintInfo(dictionary: nil)
         info.jobName = Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String ?? "Sample Print"

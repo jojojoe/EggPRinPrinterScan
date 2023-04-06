@@ -42,6 +42,7 @@
 		177FCA851F9A526872B9AD47 /* Pods_PRinPrinterScan.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PRinPrinterScan.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		45604F858115B8B99F88BC39 /* Pods-PRinPrinterScan.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PRinPrinterScan.release.xcconfig"; path = "Target Support Files/Pods-PRinPrinterScan/Pods-PRinPrinterScan.release.xcconfig"; sourceTree = "<group>"; };
 		D80D358429D32BC400F6B307 /* PRStartAnimationVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRStartAnimationVC.swift; sourceTree = "<group>"; };
+		D80D358629DF13EA00F6B307 /* storeli.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = storeli.storekit; sourceTree = "<group>"; };
 		D84CEBEC29C5AAF500E9841E /* PRPrinterManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRPrinterManager.swift; sourceTree = "<group>"; };
 		D84CEBEE29C6B82300E9841E /* PRPrinterClipboardVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRPrinterClipboardVC.swift; sourceTree = "<group>"; };
 		D84CEBF029C70A5A00E9841E /* PRPrinterWebPrinterVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PRPrinterWebPrinterVC.swift; sourceTree = "<group>"; };
@@ -144,6 +145,7 @@
 				EB10184029BB191D00FC51C9 /* Assets.xcassets */,
 				EB10184229BB191D00FC51C9 /* LaunchScreen.storyboard */,
 				EB10184529BB191D00FC51C9 /* Info.plist */,
+				D80D358629DF13EA00F6B307 /* storeli.storekit */,
 			);
 			path = PRinPrinterScan;
 			sourceTree = "<group>";

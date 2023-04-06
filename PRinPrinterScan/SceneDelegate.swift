@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import StoreKit
+import SwiftyStoreKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -16,7 +18,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         
         guard let _ = (scene as? UIWindowScene) else { return }
+        //
+        SwiftyStoreKit.completeTransactions { purchases in
+            debugPrint("purchases - \(purchases)")
+        }
         
+        //
         let aniVC = PRStartAnimationVC()
         let nav = UINavigationController.init(rootViewController: aniVC)
         nav.isNavigationBarHidden = true
@@ -72,6 +79,34 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             if let nav = self.rootNav {
                 nav.pushViewController(pageOptionVC, animated: true)
             }
+        } else {
+            
+            PRPrinterStoreManager.default.isPurchased {[weak self] purchased in
+                guard let `self` = self else {return}
+                DispatchQueue.main.async {
+                    debugPrint("purchased - \(purchased)")
+                    if !PRPrinterStoreManager.default.inSubscription {
+                        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.2) {
+                            [weak self] in
+                            guard let `self` = self else {return}
+                            let shopVC = PRPrinterStoreVC()
+                            self.VC.present(shopVC, animated: true)
+                            shopVC.pageDisappearBlock = {
+                                [weak self] in
+                                guard let `self` = self else {return}
+                                DispatchQueue.main.async {
+                                    SKStoreReviewController.requestReview()
+                                    
+                                }
+                            }
+                        }
+                    } else {
+                        SKStoreReviewController.requestReview()
+                    }
+                }
+            }
+            
+            
         }
     }
 

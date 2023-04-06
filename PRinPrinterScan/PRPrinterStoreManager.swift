@@ -32,8 +32,8 @@ class PRPrinterStoreManager {
     }
     
     public enum IAPType: String {
-        case month = "com..onemonth"
-        case year = "com..oneyear"
+        case month = "com.scan.print.fast.month"
+        case year = "com.scan.print.fast.year"
     }
     
     public enum VerifyLocalReceiptResult {
@@ -50,7 +50,7 @@ class PRPrinterStoreManager {
     
     var iapTypeList: [IAPType] = [.month, .year]
     var currentIapType: IAPType = .year
-    var inSubscription: Bool = true
+    var inSubscription: Bool = false
     var currentProducts: [PRPrinterStoreManager.IAPProduct] = []
     
 }
@@ -82,7 +82,6 @@ extension PRPrinterStoreManager {
                 
                 self.refreshReceipt { (_, _) in
                     self.isPurchased { (status) in
-                        self.inSubscription = status
                         if status {
                             NotificationCenter.default.post(
                                 name: NSNotification.Name(rawValue: PurchaseNotificationKeys.success),
@@ -111,7 +110,6 @@ extension PRPrinterStoreManager {
                 }
                 self.refreshReceipt { (_, _) in
                     self.isPurchased { (status) in
-                        self.inSubscription = status
                         if status {
                             let currency = purchaseDetail.product.priceLocale.currencySymbol ?? "$"
                             let price = purchaseDetail.product.price.doubleValue

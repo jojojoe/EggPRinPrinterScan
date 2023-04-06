@@ -1,0 +1,82 @@
+{
+  "identifier" : "87AD6180",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+
+  ],
+  "settings" : {
+
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "FDBA48B7",
+      "localizations" : [
+
+      ],
+      "name" : "PrinterPro",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "19.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "2853A214",
+          "introductoryOffer" : {
+            "displayPrice" : "0.99",
+            "internalID" : "627C9AAD",
+            "paymentMode" : "none",
+            "subscriptionPeriod" : "P1W"
+          },
+          "localizations" : [
+            {
+              "description" : "YearSubscription",
+              "displayName" : "YearSubscription",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.scan.print.fast.year",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Year Subscribe",
+          "subscriptionGroupID" : "FDBA48B7",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "4.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "417FBEF3",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "MonthSubscrption",
+              "displayName" : "MonthSubscrption",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.scan.print.fast.month",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Month Subscribe",
+          "subscriptionGroupID" : "FDBA48B7",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 2,
+    "minor" : 0
+  }
+}

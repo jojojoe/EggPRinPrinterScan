@@ -478,13 +478,23 @@ extension PRPrinterOptionsVC {
 //            let resultUlrs = PRPrinterManager.default.processMakeNewPDFImagesUrls()
 //            showSystemPrinter(urls: resultUlrs)
 //        }
-        if PRPrinterManager.default.hasloadBigPDFImg == true {
-            let resultUlrs = PRPrinterManager.default.processMakeNewPDFImagesUrls()
-            showSystemPrinter(urls: resultUlrs)
+        
+        if PRPrinterStoreManager.default.inSubscription {
+            if PRPrinterManager.default.hasloadBigPDFImg == true {
+                let resultUlrs = PRPrinterManager.default.processMakeNewPDFImagesUrls()
+                showSystemPrinter(urls: resultUlrs)
+            } else {
+                showSystemPrinter(urls: [contentUrl])
+            }
         } else {
-            showSystemPrinter(urls: [contentUrl])
+            let shopVC = PRPrinterStoreVC()
+            self.present(shopVC, animated: true)
+            shopVC.pageDisappearBlock = {
+                [weak self] in
+                guard let `self` = self else {return}
+            }
         }
-
+        
     }
     
     

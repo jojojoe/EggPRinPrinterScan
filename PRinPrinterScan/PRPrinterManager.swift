@@ -13,6 +13,8 @@ class PRPrinterManager: NSObject {
     
     static let `default` = PRPrinterManager()
     
+    var currentPrinterName: String?
+    
     var document: PDFDocument = PDFDocument()
     
     let pdfWidth: CGFloat = 595

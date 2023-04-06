@@ -32,7 +32,7 @@ class PRSettingViewController: UIViewController {
     var collection: UICollectionView!
     
     let itemList: [[String : String]] = [
-//        ["id":"0", "icon":"Frame 10", "title":"Restore Purchase"],
+        ["id":"0", "icon":"Frame 10", "title":"Restore Purchase"],
         ["id":"1", "icon":"Frame 11", "title":"Share Our App"],
         ["id":"2", "icon":"Frame 8", "title":"Terms of use"],
         ["id":"3", "icon":"Frame 12", "title":"Privacy Policy"],

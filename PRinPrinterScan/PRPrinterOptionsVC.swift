@@ -119,7 +119,8 @@ class PRPrinterOptionsVC: UIViewController {
         printerSelectBtn.addSubview(printerNameL)
         printerNameL.textColor = UIColor(hexString: "#999999")
         printerNameL.font = UIFont(name: "SFProText-Regular", size: 14)
-        printerNameL.text = "No printer selected"
+        
+        printerNameL.text = PRPrinterManager.default.currentPrinterName ?? "No Printer Selected"
         printerNameL.textAlignment = .right
         printerNameL.lineBreakMode = .byTruncatingTail
         printerNameL.snp.makeConstraints {
@@ -541,6 +542,7 @@ extension PRPrinterOptionsVC {
             controller, completed, error in
             
         }
+        printInVC.delegate = self
     }
     
     func updatePageRangeInfoLabel() {
@@ -563,6 +565,17 @@ extension PRPrinterOptionsVC {
     }
 }
 
+extension PRPrinterOptionsVC: UIPrintInteractionControllerDelegate {
+    func printInteractionControllerWillStartJob(_ printInteractionController: UIPrintInteractionController) {
+        KRProgressHUD.showMessage("Printing...")
+    }
+
+    
+    func printInteractionControllerDidFinishJob(_ printInteractionController: UIPrintInteractionController) {
+        KRProgressHUD.showSuccess(withMessage: "Print complete!")
+    }
+}
+
 extension PRPrinterOptionsVC {
     func showPrinterPicker() {
         
@@ -578,6 +591,7 @@ extension PRPrinterOptionsVC {
                         debugPrint("Printer displayName : \(printer.displayName)")
                         debugPrint("Printer url : \(printer.url)")
                         self.printerNameL.text = printer.displayName
+                        PRPrinterManager.default.currentPrinterName = printer.displayName
                     } else {
                         debugPrint("Printer is not selected")
                     }

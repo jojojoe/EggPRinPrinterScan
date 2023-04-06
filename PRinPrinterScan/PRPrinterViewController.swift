@@ -13,7 +13,7 @@ class PRPrinterViewController: UIViewController {
 
     var mainVC: ViewController!
     
-    
+    let connectNameLabel = UILabel()
     private let radarAnimation = "radarAnimation"
     private var animationLayer: CALayer?
     private var animationGroup: CAAnimationGroup?
@@ -100,12 +100,28 @@ class PRPrinterViewController: UIViewController {
         connectLabel.text = "Connect Your Device"
         connectLabel.textColor = .black
         connectLabel.font = UIFont(name: "SFProText-Bold", size: 18)
-        connectLabel.snp.makeConstraints {
-            $0.left.equalTo(24)
-            $0.top.equalToSuperview().offset(26)
-            $0.width.height.greaterThanOrEqualTo(12)
+        
+        
+        
+        //
+        
+        connectBgV.addSubview(connectNameLabel)
+        connectNameLabel.text = ""
+        connectNameLabel.textColor = .lightGray
+        connectNameLabel.font = UIFont(name: "SFProText-Regular", size: 10)
+        connectNameLabel.snp.makeConstraints {
+            $0.left.equalTo(25)
+            $0.centerY.equalTo(connectBgV.snp.centerY).offset(-2)
+            $0.width.equalTo(187)
+            $0.height.greaterThanOrEqualTo(1)
         }
         
+        connectLabel.snp.makeConstraints {
+            $0.left.equalTo(24)
+//            $0.top.equalToSuperview().offset(26)
+            $0.bottom.equalTo(connectNameLabel.snp.top).offset(-4)
+            $0.width.height.greaterThanOrEqualTo(12)
+        }
         //
         let connectBtn = UIButton()
         connectBtn.isUserInteractionEnabled = false
@@ -117,7 +133,7 @@ class PRPrinterViewController: UIViewController {
         connectBgV.addSubview(connectBtn)
         connectBtn.snp.makeConstraints {
             $0.left.equalTo(connectLabel.snp.left)
-            $0.top.equalTo(connectLabel.snp.bottom).offset(10)
+            $0.top.equalTo(connectNameLabel.snp.bottom).offset(7)
             $0.width.equalTo(90)
             $0.height.equalTo(32)
         }
@@ -284,41 +300,41 @@ class PRPrinterViewController: UIViewController {
 
 extension PRPrinterViewController {
     func showConnectPinPai() {
-        let printerBrandV = PRinPrinterPinpaiSelectView()
-        self.mainVC.view.addSubview(printerBrandV)
-        printerBrandV.alpha = 0
-        printerBrandV.snp.makeConstraints {
-            $0.left.right.top.bottom.equalToSuperview()
-        }
-        UIView.animate(withDuration: 0.3, delay: 0) {
-            printerBrandV.alpha = 1
-        } completion: { _ in
-            
-        }
-        printerBrandV.closeClickBlock = {
-            [weak self] in
-            guard let `self` = self else {return}
-            DispatchQueue.main.async {
-                UIView.animate(withDuration: 0.3, delay: 0) {
-                    printerBrandV.alpha = 0
-                } completion: {[weak self] finished in
-                    guard let `self` = self else {return}
-                    if finished {
-                        DispatchQueue.main.async {
-                            printerBrandV.removeFromSuperview()
-                        }
-                    }
-                }
-            }
-        }
-        printerBrandV.contentItemClickBlock = {
-            [weak self] in
-            guard let `self` = self else {return}
-            DispatchQueue.main.async {
-                self.showPrinterPicker()
-            }
-        }
-        
+//        let printerBrandV = PRinPrinterPinpaiSelectView()
+//        self.mainVC.view.addSubview(printerBrandV)
+//        printerBrandV.alpha = 0
+//        printerBrandV.snp.makeConstraints {
+//            $0.left.right.top.bottom.equalToSuperview()
+//        }
+//        UIView.animate(withDuration: 0.3, delay: 0) {
+//            printerBrandV.alpha = 1
+//        } completion: { _ in
+//
+//        }
+//        printerBrandV.closeClickBlock = {
+//            [weak self] in
+//            guard let `self` = self else {return}
+//            DispatchQueue.main.async {
+//                UIView.animate(withDuration: 0.3, delay: 0) {
+//                    printerBrandV.alpha = 0
+//                } completion: {[weak self] finished in
+//                    guard let `self` = self else {return}
+//                    if finished {
+//                        DispatchQueue.main.async {
+//                            printerBrandV.removeFromSuperview()
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        printerBrandV.contentItemClickBlock = {
+//            [weak self] in
+//            guard let `self` = self else {return}
+//            DispatchQueue.main.async {
+//
+//            }
+//        }
+        self.showPrinterPicker()
     }
     
     func showPrinterPicker() {
@@ -334,6 +350,8 @@ extension PRPrinterViewController {
                     if let printer: UIPrinter = printerPickerController.selectedPrinter {
                         debugPrint("Printer displayName : \(printer.displayName)")
                         debugPrint("Printer url : \(printer.url)")
+                        self.connectNameLabel.text = printer.displayName
+                        PRPrinterManager.default.currentPrinterName = printer.displayName
                     } else {
                         debugPrint("Printer is not selected")
                     }

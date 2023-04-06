@@ -122,6 +122,16 @@ class ViewController: UIViewController {
         
     }
  
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        updateConnectName()
+    }
+    
+    func updateConnectName() {
+        printerPageVC.connectNameLabel.text = (PRPrinterManager.default.currentPrinterName != nil) ? PRPrinterManager.default.currentPrinterName : ""
+        
+    }
+    
 }
  
 

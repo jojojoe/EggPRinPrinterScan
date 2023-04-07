@@ -8,12 +8,16 @@
 import UIKit
 import SnapKit
 import KRProgressHUD
+import WebKit
+
+let buildMPrice: Double = 9.99
+let buildYPrice: Double = 39.99
 
 class PRPrinterStoreVC: UIViewController {
 
-    let monthBeforePrice: Double = 9.99
-    var defaultMonthPrice: Double = 6.99
-    var defaultYearPrice: Double = 24.99
+    let monthBeforePrice: Double = 19.99
+    var defaultMonthPrice: Double = buildMPrice
+    var defaultYearPrice: Double = buildYPrice
     var currentSymbol: String = "$"
     
     let backBtn = UIButton()
@@ -69,18 +73,17 @@ class PRPrinterStoreVC: UIViewController {
         theContinueBtn.addTarget(self, action: #selector(theContinueBtnClick(sender: )), for: .touchUpInside)
         
         //
-        let purchaseNoticeTextV = UITextView()
-        purchaseNoticeTextV.textAlignment = .center
-        purchaseNoticeTextV.font = UIFont(name: "SFProText-Regular", size: 10)
-        purchaseNoticeTextV.textColor = UIColor(hexString: "#666666")
-        view.addSubview(purchaseNoticeTextV)
-        purchaseNoticeTextV.snp.makeConstraints {
+        let purchaseNoticeWebV = WKWebView()
+        view.addSubview(purchaseNoticeWebV)
+        purchaseNoticeWebV.navigationDelegate = self
+        purchaseNoticeWebV.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-0)
             $0.left.equalToSuperview().offset(24)
             $0.top.equalTo(theContinueBtn.snp.bottom).offset(15)
         }
-        purchaseNoticeTextV.text = purchaseNoticeStr
+        
+        purchaseNoticeWebV.loadHTMLString(purchaseNoticeStr, baseURL: nil)
         
     }
     
@@ -319,24 +322,49 @@ class PRPrinterStoreVC: UIViewController {
         }
     }
     
-    
+    //
     let purchaseNoticeStr = """
-    The payment will be charged to your Google PlayAccount within 24
-     hours prior to the end of the free trialperiod - if applicable
-     - or at the confirmation of yourpurchase. Your
-    subscription automatically renews unlessauto-renew is
-    turned off at least 24 hours before theend of the current
-    period You can cancel auto-renewalat anytime, but this
-    won't affect the currently activesubscription period.Your
-    Google Play account will becharged for renewal within 24
-    hours prior to the end ofthe current period, and identify
-    the cost of the renewalWe take the satisfaction and
-    security of our customersvery seriously. By signing up
-    to the subscriptions, youagree with our
-    Terms of Use and Privacy Policy.
+    <h1>Fast Print Subscriptions</h1>
 
+    <p>You can subscribe to Fast Print Subscriptions to get all the fonts, special symbols in the app.
+    </p>
+
+    <p>Fast Print Subscriptions provides some subscription. The subscription price is:</p>
+
+    <p>$\(buildYPrice)/Year</p>
+
+    <p>$\(buildMPrice)/Month</p>
+
+    <p>Payment will be charged to iTunes Account at confirmation of purchase.</p>
+
+    <p>Subscriptions will automatically renew unless auto-renew is turned off at least 24 hours before the end of the current subscription period.</p>
+
+    <p>Your account will be charged for renewal 24 hours before the end of the current period, and the renewal fee will be determined.</p>
+
+    <p>Subscriptions may be managed by the user and auto-renewal may also be turned off in the user&#39;s Account Settings after purchase.</p>
+
+    <p>If any portion of the offered free trial period is unused, the unused portion will be forfeited if the user purchases a subscription for that portion, where applicable.</p>
+
+    <p>If you do not purchase an auto-renewing subscription, you can still use our app as normal, and any unlocked content will work normally after the subscription expires.</p>
+
+    <p><a href="https://sites.google.com/view/fast-print-terms-of-use/home">Terms of Use</a> & <a href="https://sites.google.com/view/fast-print-privacy-policy/home">Privacy Policy</a></p>
     """
+    
 
+}
+
+extension PRPrinterStoreVC: WKNavigationDelegate {
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction) async -> WKNavigationActionPolicy {
+        if navigationAction.navigationType == .linkActivated {
+            if let url = navigationAction.request.url, UIApplication.shared.canOpenURL(url) {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                
+            }
+            return .cancel
+        } else {
+            return .allow
+        }
+    }
 }
 
 extension PRPrinterStoreVC {

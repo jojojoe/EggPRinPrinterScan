@@ -38,7 +38,7 @@
           "codeOffers" : [
 
           ],
-          "displayPrice" : "10.99",
+          "displayPrice" : "39.99",
           "familyShareable" : false,
           "groupNumber" : 1,
           "internalID" : "E15C9268",
@@ -50,7 +50,7 @@
               "locale" : "en_US"
             }
           ],
-          "productID" : "com.waterkink.phomade.listoneyear",
+          "productID" : "com.scan.print.fast.year",
           "recurringSubscriptionPeriod" : "P1Y",
           "referenceName" : "year",
           "subscriptionGroupID" : "9A54D4FE",
@@ -63,7 +63,7 @@
           "codeOffers" : [
 
           ],
-          "displayPrice" : "5.99",
+          "displayPrice" : "9.99",
           "familyShareable" : false,
           "groupNumber" : 1,
           "internalID" : "5FC92603",
@@ -75,7 +75,7 @@
               "locale" : "en_US"
             }
           ],
-          "productID" : "com.waterkink.phomade.listonemonth",
+          "productID" : "com.scan.print.fast.month",
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "month",
           "subscriptionGroupID" : "9A54D4FE",

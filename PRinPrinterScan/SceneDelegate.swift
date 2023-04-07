@@ -75,9 +75,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         if let targetUrl = url {
             debugPrint("targetUrl - \(targetUrl)")
-            let pageOptionVC = PRPrinterOptionsVC(contentUrl: targetUrl)
-            if let nav = self.rootNav {
-                nav.pushViewController(pageOptionVC, animated: true)
+            PRPrinterStoreManager.default.isPurchased {[weak self] purchased in
+                guard let `self` = self else {return}
+                DispatchQueue.main.async {
+                    let pageOptionVC = PRPrinterOptionsVC(contentUrl: targetUrl)
+                    if let nav = self.rootNav {
+                        nav.pushViewController(pageOptionVC, animated: true)
+                    }
+                }
             }
         } else {
             
@@ -90,6 +95,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                             [weak self] in
                             guard let `self` = self else {return}
                             let shopVC = PRPrinterStoreVC()
+                            shopVC.modalPresentationStyle = .fullScreen
                             self.VC.present(shopVC, animated: true)
                             shopVC.pageDisappearBlock = {
                                 [weak self] in

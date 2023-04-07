@@ -12,7 +12,7 @@ import YPImagePicker
 class PRPrinterViewController: UIViewController {
 
     var mainVC: ViewController!
-    
+    let connectBtn = UIButton()
     let connectNameLabel = UILabel()
     private let radarAnimation = "radarAnimation"
     private var animationLayer: CALayer?
@@ -123,7 +123,7 @@ class PRPrinterViewController: UIViewController {
             $0.width.height.greaterThanOrEqualTo(12)
         }
         //
-        let connectBtn = UIButton()
+        
         connectBtn.isUserInteractionEnabled = false
         connectBtn.backgroundColor = UIColor(hexString: "#4285F4")
         connectBtn.setTitle("Connect", for: .normal)
@@ -300,6 +300,8 @@ class PRPrinterViewController: UIViewController {
 
 extension PRPrinterViewController {
     func showConnectPinPai() {
+        self.showPrinterPicker()
+        
 //        let printerBrandV = PRinPrinterPinpaiSelectView()
 //        self.mainVC.view.addSubview(printerBrandV)
 //        printerBrandV.alpha = 0
@@ -334,7 +336,7 @@ extension PRPrinterViewController {
 //
 //            }
 //        }
-        self.showPrinterPicker()
+        
     }
     
     func showPrinterPicker() {
@@ -351,6 +353,7 @@ extension PRPrinterViewController {
                         debugPrint("Printer displayName : \(printer.displayName)")
                         debugPrint("Printer url : \(printer.url)")
                         self.connectNameLabel.text = printer.displayName
+                        self.connectBtn.setTitle("Connected", for: .normal)
                         PRPrinterManager.default.currentPrinterName = printer.displayName
                     } else {
                         debugPrint("Printer is not selected")

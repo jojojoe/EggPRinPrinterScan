@@ -158,6 +158,7 @@ extension ViewController {
         printBtn.isSelected = false
         settingBtn.isSelected = true
         scaneBtn.isSelected = false
+        settingPageVC.updateSubBannerStatus()
 //        printBtn.iconImgV.isHighlighted = false
 //        settingBtn.iconImgV.isHighlighted = true
     }

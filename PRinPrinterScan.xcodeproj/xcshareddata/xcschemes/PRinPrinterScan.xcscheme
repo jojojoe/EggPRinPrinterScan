@@ -51,7 +51,7 @@
          </BuildableReference>
       </BuildableProductRunnable>
       <StoreKitConfigurationFileReference
-         identifier = "../PRinPrinterScan/storeli.storekit">
+         identifier = "../PRinPrinterScan/storelist.storekit">
       </StoreKitConfigurationFileReference>
    </LaunchAction>
    <ProfileAction

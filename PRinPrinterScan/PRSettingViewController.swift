@@ -134,6 +134,7 @@ class PRSettingViewController: UIViewController {
         } else {
             subscribeBanner.isHidden = false
         }
+        collection.reloadData()
     }
     
     
@@ -230,14 +231,18 @@ extension PRSettingViewController: UICollectionViewDelegate {
 extension PRSettingViewController: MFMailComposeViewControllerDelegate {
     
     func userRestoreAction() {
-        
-        PRPrinterStoreManager.default.restore { success in
-            if success {
-                KRProgressHUD.showSuccess(withMessage: "The subscription was restored successfully")
-            } else {
-                KRProgressHUD.showMessage("Nothing to Restore")
+        if PRPrinterStoreManager.default.inSubscription {
+            KRProgressHUD.showSuccess(withMessage: "You are already in the subscription period!")
+        } else {
+            PRPrinterStoreManager.default.restore { success in
+                if success {
+                    KRProgressHUD.showSuccess(withMessage: "The subscription was restored successfully")
+                } else {
+                    KRProgressHUD.showMessage("Nothing to Restore")
+                }
             }
         }
+        
     }
     
     func userTermsAction() {

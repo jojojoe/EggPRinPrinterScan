@@ -550,7 +550,10 @@ extension PRPrinterOptionsVC {
         printInVC.printingItems = urls //array of NSData, NSURL, UIImage.
         printInVC.present(animated: true) {
             controller, completed, error in
-            
+            debugPrint("completed = \(completed)")
+            if completed {
+                KRProgressHUD.showSuccess(withMessage: "Print complete!")
+            }
         }
         printInVC.delegate = self
     }
@@ -577,13 +580,11 @@ extension PRPrinterOptionsVC {
 
 extension PRPrinterOptionsVC: UIPrintInteractionControllerDelegate {
     func printInteractionControllerWillStartJob(_ printInteractionController: UIPrintInteractionController) {
-        KRProgressHUD.showMessage("Printing...")
+        
     }
 
+     
     
-    func printInteractionControllerDidFinishJob(_ printInteractionController: UIPrintInteractionController) {
-        KRProgressHUD.showSuccess(withMessage: "Print complete!")
-    }
 }
 
 extension PRPrinterOptionsVC {

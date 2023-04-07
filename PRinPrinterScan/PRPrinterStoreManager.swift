@@ -32,8 +32,9 @@ class PRPrinterStoreManager {
     }
     
     public enum IAPType: String {
-        case month = "com.scan.print.fast.month"
-        case year = "com.scan.print.fast.year"
+        
+        case month = "com.waterkink.phomade.listonemonth"
+        case year = "com.waterkink.phomade.listoneyear"
     }
     
     public enum VerifyLocalReceiptResult {
@@ -59,11 +60,25 @@ extension PRPrinterStoreManager {
     
     public func fetchPurchaseInfo(block: @escaping (([PRPrinterStoreManager.IAPProduct]) -> Void)) {
         let iapList = iapTypeList.map { $0.rawValue }
-        retrieveProductsInfo(iapList: iapList) {[weak self] items in
-            guard let `self` = self else { return }
-            self.currentProducts = items
-            block(items)
+//        retrieveProductsInfo(iapList: iapList) {[weak self] items in
+//            guard let `self` = self else { return }
+//            self.currentProducts = items
+//            block(items)
+//        }
+        
+        
+        SwiftyStoreKit.retrieveProductsInfo(Set(iapList)) { result in
+            let priceList = result.retrievedProducts.compactMap { $0 }
+            let localList = priceList.compactMap { PRPrinterStoreManager.IAPProduct(iapID: $0.productIdentifier, price: $0.price.doubleValue, priceLocale: $0.priceLocale, localizedPrice: $0.localizedPrice, currencyCode: $0.priceLocale.currencyCode)
+            }
+            self.currentProducts = localList
+            block(localList)
         }
+        
+        
+        
+        
+        
     }
 
     public func restore(_ successBlock: ((Bool) -> Void)? = nil) {
@@ -294,24 +309,24 @@ extension PRPrinterStoreManager {
     }
 }
 
-extension PRPrinterStoreManager {
-    /// 获取多项价格(maybe sync)
-    func retrieveProductsInfo(iapList: [String],
-                              completion: @escaping (([PRPrinterStoreManager.IAPProduct]) -> Void)) {
-         
-        SwiftyStoreKit.retrieveProductsInfo(Set(iapList)) { result in
-            let priceList = result.retrievedProducts.compactMap { $0 }
-            let localList = priceList.compactMap { PRPrinterStoreManager.IAPProduct(iapID: $0.productIdentifier, price: $0.price.doubleValue, priceLocale: $0.priceLocale, localizedPrice: $0.localizedPrice, currencyCode: $0.priceLocale.currencyCode)
-            }
-            completion(localList)
-        }
-    }
-
-    /// 获取单项价格(maybe sync)
-    func retrieveProductsInfo(iapID: String,
-                              completion: @escaping ((IAPProduct?) -> Void)) {
-        retrieveProductsInfo(iapList: [iapID]) { result in
-            completion(result.filter { $0.iapID == iapID }.first)
-        }
-    }
-}
+//extension PRPrinterStoreManager {
+//    /// 获取多项价格(maybe sync)
+//    func retrieveProductsInfo(iapList: [String],
+//                              completion: @escaping (([PRPrinterStoreManager.IAPProduct]) -> Void)) {
+//
+//        SwiftyStoreKit.retrieveProductsInfo(Set(iapList)) { result in
+//            let priceList = result.retrievedProducts.compactMap { $0 }
+//            let localList = priceList.compactMap { PRPrinterStoreManager.IAPProduct(iapID: $0.productIdentifier, price: $0.price.doubleValue, priceLocale: $0.priceLocale, localizedPrice: $0.localizedPrice, currencyCode: $0.priceLocale.currencyCode)
+//            }
+//            completion(localList)
+//        }
+//    }
+//
+//    /// 获取单项价格(maybe sync)
+//    func retrieveProductsInfo(iapID: String,
+//                              completion: @escaping ((IAPProduct?) -> Void)) {
+//        retrieveProductsInfo(iapList: [iapID]) { result in
+//            completion(result.filter { $0.iapID == iapID }.first)
+//        }
+//    }
+//}

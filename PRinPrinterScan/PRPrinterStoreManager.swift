@@ -33,8 +33,8 @@ class PRPrinterStoreManager {
     
     public enum IAPType: String {
         
-        case month = "com.waterkink.phomade.listonemonth"
-        case year = "com.waterkink.phomade.listoneyear"
+        case month = "com.scan.print.fast.month"
+        case year = "com.scan.print.fast.year"
     }
     
     public enum VerifyLocalReceiptResult {
@@ -69,7 +69,7 @@ extension PRPrinterStoreManager {
         
         SwiftyStoreKit.retrieveProductsInfo(Set(iapList)) { result in
             let priceList = result.retrievedProducts.compactMap { $0 }
-            let localList = priceList.compactMap { PRPrinterStoreManager.IAPProduct(iapID: $0.productIdentifier, price: $0.price.doubleValue, priceLocale: $0.priceLocale, localizedPrice: $0.localizedPrice, currencyCode: $0.priceLocale.currencyCode)
+            let localList = priceList.compactMap { PRPrinterStoreManager.IAPProduct(iapID: $0.productIdentifier, price: $0.price.doubleValue.rounded(digits: 2), priceLocale: $0.priceLocale, localizedPrice: $0.localizedPrice, currencyCode: $0.priceLocale.currencyCode)
             }
             self.currentProducts = localList
             block(localList)

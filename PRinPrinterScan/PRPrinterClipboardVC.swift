@@ -132,6 +132,7 @@ class PRPrinterClipboardVC: UIViewController {
             printerAction()
         } else {
             let shopVC = PRPrinterStoreVC()
+            shopVC.modalPresentationStyle = .fullScreen
             self.present(shopVC, animated: true)
             shopVC.pageDisappearBlock = {
                 [weak self] in
